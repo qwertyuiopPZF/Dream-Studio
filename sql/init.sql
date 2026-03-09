@@ -3,8 +3,11 @@
 -- Host: 127.0.0.1    Database: eleven_blog
 -- ------------------------------------------------------
 -- Server version	8.0.42
+<<<<<<< HEAD
 CREATE DATABASE IF NOT EXISTS eleven_blog DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE eleven_blog;
+=======
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;

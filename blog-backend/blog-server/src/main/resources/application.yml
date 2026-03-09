@@ -3,6 +3,7 @@
 spring:
     # 数据源配置
     datasource:
+<<<<<<< HEAD
         # 👇 只改了这里：blog-mysql -> localhost
         url: jdbc:mysql://localhost:3306/eleven_blog?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useOldAliasMetadataBehavior=true&zeroDateTimeBehavior=convertToNull&autoCommit=true&rewriteBatchedStatements=true
         # 数据库用户名
@@ -12,11 +13,23 @@ spring:
         # MySQL驱动类名
         driver-class-name: com.mysql.cj.jdbc.Driver
 
+=======
+        url: jdbc:mysql://blog-mysql:3306/eleven_blog?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useOldAliasMetadataBehavior=true&zeroDateTimeBehavior=convertToNull&autoCommit=true&rewriteBatchedStatements=true
+        # 数据库用户名
+        username: root
+        # 数据库密码（请修改为你的MySQL密码）
+        password: 20469960
+        # MySQL驱动类名
+        driver-class-name: com.mysql.cj.jdbc.Driver
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
     servlet:
         multipart:
             max-file-size: 10MB
             max-request-size: 50MB
+<<<<<<< HEAD
 
+=======
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
     data:
         redis:
             host: 127.0.0.1
@@ -24,12 +37,16 @@ spring:
             port: 6379
             database: 1
             connect-timeout: 10000ms
+<<<<<<< HEAD
 
+=======
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
     # 数据库初始化配置
     sql:
         init:
             mode: never  # 由 Docker 初始化脚本处理
             continue-on-error: false
+<<<<<<< HEAD
 
 # JWT配置
 jwt:
@@ -40,22 +57,53 @@ jwt:
 # 服务器配置
 server:
     port: 8081
+=======
+jwt:
+    secret: "MySuperSecretKeyForBlogProjectThatIsVeryLongAndSecure123"
+    access-token-expiration: 1800000
+    refresh-token-expiration: 604800000
+
+# 服务器配置
+server:
+    # 应用启动端口
+    port: 8081
+    # Docker环境中需要监听所有网络接口
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
     address: 0.0.0.0
 
 # MyBatis配置
 mybatis:
+<<<<<<< HEAD
     mapper-locations: classpath:mapper/*.xml
     type-aliases-package: blog.pojo
     configuration:
         map-underscore-to-camel-case: true
+=======
+    # mapper XML配置文件位置
+    mapper-locations: classpath:mapper/*.xml
+    # 实体类包路径（用于类型别名）
+    type-aliases-package: blog.pojo
+    configuration:
+        # 开启驼峰命名转换（数据库字段名user_name转换为Java属性名userName）
+        map-underscore-to-camel-case: true
+        # 打印SQL语句（开发环境）
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
         log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 # 日志配置
 logging:
     level:
         blog:
+<<<<<<< HEAD
             mapper: debug
             service: info
+=======
+            # mapper层日志级别为debug，便于SQL调试
+            mapper: debug
+            # service层日志级别为info
+            service: info
+            # controller层日志级别为info
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
             controller: info
         org.springframework.security: debug
         org.springframework.web: debug
@@ -78,9 +126,20 @@ management:
         db:
             enabled: true
 
+<<<<<<< HEAD
 # 博客配置
 blog:
     owner:
         email: 3331379576@qq.com
         nickname: 困醒
         avatar: static/images/Image_1761740285982.jpg
+=======
+blog:
+    owner:
+        # 你的博主邮箱
+        email: 3331379576@qq.com
+        # 你的博主昵称
+        nickname: 困醒
+        # 你的博主头像URL
+        avatar: static/images/Image_1761740285982.jpg
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241

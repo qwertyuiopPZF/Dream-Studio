@@ -1,5 +1,8 @@
 package blog.config;
+<<<<<<< HEAD
 
+=======
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -55,6 +58,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+<<<<<<< HEAD
                 // 禁用 CSRF
                 .csrf(AbstractHttpConfigurer::disable)
 
@@ -65,10 +69,25 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 // 配置异常处理
+=======
+                // 禁用 CSRF (因为我们使用 Token，不需要 Cookie/Session，所以不需要防 CSRF)
+                .csrf(AbstractHttpConfigurer::disable)
+
+                // 启用 CORS (允许跨域，配置见下文 corsConfigurationSource)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+                // 设置 Session 管理为无状态 (Stateless)
+                // 这意味着服务器不会创建 Session，每次请求都必须带 Token
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // 配置异常处理
+                // 当用户未携带 Token 或 Token 无效时，不跳转登录页，而是返回 401 JSON
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
 
                 // 配置路径拦截规则
                 .authorizeHttpRequests(auth -> auth
+<<<<<<< HEAD
                         // 允许静态资源
                         .requestMatchers("/images/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
@@ -80,6 +99,15 @@ public class SecurityConfig {
                         .requestMatchers("/admin/auth/**").permitAll()
 
                         // 公共只读接口 (GET 请求)
+=======
+                        // 允许静态资源 (如果有 swagger 或 静态图片)
+                        .requestMatchers("/images/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
+                        // 放行登录接口、刷新 Token 接口
+                        .requestMatchers("/admin/auth/**").permitAll()
+
+                        // 3. 公共只读接口 (GET 请求) - 所有人(包括游客)可访问
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
                         .requestMatchers(HttpMethod.GET,
                                 "/api/articles/**",
                                 "/api/categories/**",
@@ -89,35 +117,66 @@ public class SecurityConfig {
                                 "/api/archive/**",
                                 "/api/comments/**"
                         ).permitAll()
+<<<<<<< HEAD
 
                         // 评论接口 (POST 请求)
                         .requestMatchers(HttpMethod.POST, "/api/comments/**").permitAll()
 
                         // 管理员写操作 (需要 ADMIN 角色)
+=======
+                        // 评论接口 (post 请求)
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/comments/**"
+                        ).permitAll()
+
+                        // 4. 管理员写操作 (POST/PUT/DELETE) - 只有 ADMIN 角色可访问
+                        // 包含了新增(POST)、修改(PUT)、删除(DELETE)、上传(POST)
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
                         .requestMatchers(HttpMethod.POST, "/articles/**", "/moment/**", "/friendlinks/**", "/upload/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/articles/**", "/moment/**", "/friendlinks/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/articles/**", "/moment/**", "/friendlinks/**").hasRole("ADMIN")
 
+<<<<<<< HEAD
                         // 后台管理页面
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
+=======
+                        // 5. 后台管理页面通用拦截 (兜底策略)
+                        // 只要是 /admin 开头的其他路径，都必须是管理员
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
                         // 其他所有请求都需要认证
                         .anyRequest().authenticated()
                 )
 
+<<<<<<< HEAD
                 // 添加 JWT 过滤器
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
+=======
+                // 将我们自定义的 JwtFilter 添加到 UsernamePasswordAuthenticationFilter 之前
+                // 这样请求进来会先检查 Header 里的 Token
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+
+
+
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
         return http.build();
     }
 
     /**
      * 4. CORS 跨域配置源
+<<<<<<< HEAD
+=======
+     * 解决前端 (localhost:3000) 访问后端 (localhost:8080) 时的跨域报错
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
+<<<<<<< HEAD
         // 允许的前端域名
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:8080",
@@ -125,6 +184,11 @@ public class SecurityConfig {
                 "http://8.162.7.124:8080",
                 "http://8.162.7.124:3000"
         ));
+=======
+        // 允许的前端域名 (上线时建议修改为具体的域名，开发环境可用 *)
+        // 如果 allowCredentials 为 true，这里不能写 "*"，必须写具体域名
+        configuration.setAllowedOrigins(List.of("http://8.162.7.124:8080", "http://8.162.7.124:3000" ));
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
 
         // 允许的方法
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
@@ -132,7 +196,11 @@ public class SecurityConfig {
         // 允许的 Header
         configuration.setAllowedHeaders(List.of("*"));
 
+<<<<<<< HEAD
         // 是否允许携带 Cookie
+=======
+        // 是否允许携带 Cookie (虽然 JWT 主要放在 Header，但开启这个是个好习惯)
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -140,4 +208,8 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241

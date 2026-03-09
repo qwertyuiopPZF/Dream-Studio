@@ -52,6 +52,12 @@
         <el-menu-item index="/about"
           ><el-icon><UserFilled /></el-icon>About</el-menu-item
         >
+<<<<<<< HEAD
+=======
+        <el-menu-item index="/home"
+        ><el-icon><HomeFilled /></el-icon>Forum</el-menu-item
+        >
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
         <el-menu-item index="/friendlinks"
           ><el-icon><Link /></el-icon>Links</el-menu-item
         >
@@ -90,6 +96,10 @@ import {
   Comment,
 } from '@element-plus/icons-vue'
 import ThemeSwitcher from './ThemeSwitcher.vue'
+<<<<<<< HEAD
+=======
+import Forum from "@/views/Forum.vue";
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
 
 const route = useRoute()
 const router = useRouter()

@@ -24,6 +24,10 @@ public class JwtUtil
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
     private SecretKey getSigningKey(){
         return Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
@@ -48,7 +52,13 @@ public class JwtUtil
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
 
+<<<<<<< HEAD
         // 将 Refresh Token 存入 Redis
+=======
+
+        // 将 Refresh Token 存入 Redis，Key 为 username，Value 为 token
+        // 作用：实现了服务端对登录状态的控制。如果想踢人下线，直接删 Redis 即可。
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
         redisTemplate.opsForValue().set(
                 "REFRESH_TOKEN:" + username,
                 refreshToken,
@@ -59,7 +69,12 @@ public class JwtUtil
         return refreshToken;
     }
 
+<<<<<<< HEAD
     // 解析 Token
+=======
+
+//    解析 Token
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
     public Claims parseToken(String token)
     {
         return Jwts.parserBuilder()
@@ -74,6 +89,7 @@ public class JwtUtil
         String storedToken = redisTemplate.opsForValue().get("REFRESH_TOKEN:" + username);
         return storedToken != null && storedToken.equals(incomingToken);
     }
+<<<<<<< HEAD
 
     /**
      * 创建访问令牌（用于登录接口）
@@ -98,3 +114,6 @@ public class JwtUtil
         return createAccessToken(username, roles);
     }
 }
+=======
+}
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
