@@ -1,11 +1,13 @@
-package blog.controller.admin;
+package blog.controller.user;
 
 import blog.dto.Login.LoginRequest;
 import blog.dto.Login.LoginResponse;
+import blog.dto.LoginDTO;
+import blog.result.Result;
 import blog.service.AuthService;
+import blog.vo.AuthVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -16,7 +18,8 @@ import org.springframework.web.bind.annotation.*;
  * @version 1.0
  */
 @RestController
-@RequestMapping("/admin/auth")
+@RequestMapping("/user/auth")
+@CrossOrigin(origins = "")
 @Slf4j
 public class AuthController {
 
@@ -27,5 +30,13 @@ public class AuthController {
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    /**
+      github登录
+     */
+    @PostMapping("/github/login")
+    public Result<AuthVO> githubLogin(@RequestBody String code) {
+
     }
 }

@@ -30,6 +30,7 @@ jwt:
     secret: "MySuperSecretKeyForBlogProjectThatIsVeryLongAndSecure123"
     access-token-expiration: 1800000
     refresh-token-expiration: 604800000
+    github-token-expiration: 1800000
 
 # 服务器配置
 server:
@@ -49,6 +50,15 @@ mybatis:
         map-underscore-to-camel-case: true
         # 打印SQL语句（开发环境）
         log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#github OAuth配置
+
+github:
+    login:
+        client-id:
+        client-secret:
+        redirect-uri:
+
 
 # 日志配置
 logging:

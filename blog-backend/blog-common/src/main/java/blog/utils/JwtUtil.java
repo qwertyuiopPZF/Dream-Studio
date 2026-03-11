@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,8 @@ public class JwtUtil
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+    @Autowired
+    private InfoEndpoint infoEndpoint;
 
 
     private SecretKey getSigningKey(){
@@ -62,6 +65,13 @@ public class JwtUtil
         return refreshToken;
     }
 
+    public String creatGithubToken(String githubId , Integer infoComplete){
+        return Jwts.builder()
+                .claim("githubId",githubId)
+                .claim("infoComplete",infoComplete)
+                .setIssuedAt(new Date())
+                .setExpiration()
+    }
 
 //    解析 Token
     public Claims parseToken(String token)
