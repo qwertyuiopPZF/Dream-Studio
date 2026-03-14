@@ -1,5 +1,4 @@
 package blog.utils;
-
 import blog.config.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -21,11 +20,11 @@ public class JwtUtil
 {
     @Autowired
     private JwtProperties jwtProperties;
-
     @Autowired
     private StringRedisTemplate redisTemplate;
     @Autowired
     private InfoEndpoint infoEndpoint;
+
 
 
     private SecretKey getSigningKey(){
@@ -65,14 +64,37 @@ public class JwtUtil
         return refreshToken;
     }
 
-    public String creatGithubToken(String githubId , Integer infoComplete){
+    public String createGithubAccessToken(String githubId , Integer infoComplete){
         return Jwts.builder()
                 .claim("githubId",githubId)
                 .claim("infoComplete",infoComplete)
                 .setIssuedAt(new Date())
-                .setExpiration()
+                .setIssuedAt(new Date(System.currentTimeMillis() + jwtProperties.getGithubTokenExpiration()))
+                .signWith(getSigningKey(),SignatureAlgorithm.HS256)
+                .compact();
     }
 
+    public String createGithubRefreshToken(String githubId)
+    {
+        String refreshToken = Jwts.builder()
+                .setSubject(githubId)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshTokenExpiration()))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+
+
+        // 将 Refresh Token 存入 Redis，Key 为 username，Value 为 token
+        // 作用：实现了服务端对登录状态的控制。如果想踢人下线，直接删 Redis 即可。
+        redisTemplate.opsForValue().set(
+                "REFRESH_TOKEN:" + githubId,
+                refreshToken,
+                jwtProperties.getRefreshTokenExpiration(),
+                TimeUnit.MILLISECONDS
+        );
+
+        return refreshToken;
+    }
 //    解析 Token
     public Claims parseToken(String token)
     {
@@ -83,9 +105,63 @@ public class JwtUtil
                 .getBody();
     }
 
-    public boolean validataRefreshToken(String username,String incomingToken)
+    /**
+     * 获取githubId
+     * @param token
+     * @return githubid
+     */
+    public String getGithubIdFromToken(String token){
+        return Jwts.parserBuilder()
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    /**
+     *
+     * @param token
+     * @return
+     */
+    public Integer getInfoCompleteFromToken(String token){
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("infoComplete",Integer.class);
+    }
+
+    /**
+     * 验证是否过期
+     * @param token
+     * @return bool
+     */
+    public boolean isGithubTokenExpired(String token){
+        return Jwts.parserBuilder()
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration()
+                .before(new Date());
+    }
+
+    /**
+     * 校验Redis中的Refresh Token是否有效
+     * @param githubId
+     * @param refreshToken
+     * @return
+     */
+    public boolean validateGithubRefreshToken(String githubId ,String refreshToken){
+        String storedRefreshToken = redisTemplate.opsForValue().get(refreshToken);
+        return refreshToken !=null && storedRefreshToken.equals(githubId);
+    }
+
+    public boolean validateRefreshToken(String username,String incomingToken)
     {
         String storedToken = redisTemplate.opsForValue().get("REFRESH_TOKEN:" + username);
-        return storedToken != null && storedToken.equals(incomingToken);
+        return  storedToken!= null && storedToken.equals(incomingToken);
     }
+
+
 }

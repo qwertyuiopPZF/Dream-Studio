@@ -45,6 +45,7 @@
             <version>3.0.5</version>
         </dependency>
 
+
         <!-- MySQL数据库连接器 -->
         <dependency>
             <groupId>com.mysql</groupId>
@@ -53,7 +54,6 @@
         </dependency>
 
         <!-- Lombok依赖，提供注解简化代码 -->
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

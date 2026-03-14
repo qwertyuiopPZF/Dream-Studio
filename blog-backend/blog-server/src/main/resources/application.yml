@@ -55,9 +55,9 @@ mybatis:
 
 github:
     login:
-        client-id:
-        client-secret:
-        redirect-uri:
+        client-id: Ov23liAQWw2iO4f0XHS9
+        client-secret: 57f51845bb55bc07e92193f1f4efc60e1a4b92c9
+        redirect-uri: http://8.162.7.124:3000/user/auth/github/login/callback
 
 
 # 日志配置
