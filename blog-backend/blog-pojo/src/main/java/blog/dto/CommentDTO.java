@@ -23,6 +23,11 @@ public class CommentDTO implements Serializable {
     private Long id;
 
     /**
+     * 评论用户ID
+     */
+    private Long userId;
+
+    /**
      * 昵称
      */
     private String nickname;

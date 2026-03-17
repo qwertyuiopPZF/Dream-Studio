@@ -26,4 +26,10 @@ export function createComment(commentData) {
   })
 }
 
+export function deleteComment(id) {
+  return request({
+    url: `/comments/${id}`,
+    method: 'delete',
+  })
+}
 

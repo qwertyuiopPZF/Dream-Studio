@@ -7,6 +7,7 @@ import blog.vo.ArticleVO;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,17 +25,29 @@ public class ArchiveController
 
     @Autowired
     private ArticleService articleService;
+
+    @Autowired
+    private blog.service.UserAccountService userAccountService;
     /**
      * 获取归档数据（按年月分组）
      */
     @GetMapping
     @ApiOperation("获取归档数据")
-    public Result<Map<String, Object>> getArchive()
+    public Result<Map<String, Object>> getArchive(Authentication authentication)
     {
         log.info("获取归档数据");
 
+        if (authentication == null || authentication.getName() == null) {
+            return Result.error(401, "未登录");
+        }
+
         ArticleQueryDTO queryDTO = new ArticleQueryDTO();
         queryDTO.setStatus(1);
+        blog.entity.UserAccount currentUser = userAccountService.findByUsername(authentication.getName());
+        if (currentUser == null) {
+            return Result.error("未找到当前用户");
+        }
+        queryDTO.setAuthorId(currentUser.getId());
         List<ArticleVO> articles = articleService.listArticles(queryDTO);
 
         Map<String, List<ArticleVO>> archiveMap = articles.stream()

@@ -9,6 +9,8 @@ services:
       MYSQL_ROOT_PASSWORD: 20469960
       MYSQL_DATABASE: eleven_blog
       MYSQL_TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
     volumes:
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db_data:/var/lib/mysql

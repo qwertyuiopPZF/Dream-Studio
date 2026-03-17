@@ -8,6 +8,7 @@
       <div class="comment-content-wrapper">
         <div class="comment-header">
           <span class="nickname">{{ comment.nickname }}</span>
+          <span v-if="comment.ownedByCurrentUser" class="owner-badge">我</span>
           <span class="create-date">{{ formatDate(comment.createTime) }}</span>
         </div>
         <div class="comment-body">
@@ -18,13 +19,23 @@
         </div>
         <div class="comment-footer">
           <button @click="$emit('show-reply', comment)" class="reply-btn">回复</button>
+          <button v-if="canDeleteComment(comment)" @click="$emit('delete-comment', comment)" class="reply-btn danger-btn">删除</button>
         </div>
       </div>
     </div>
 
     <!-- 回复表单 -->
     <div v-if="replyingTo === comment.id" class="reply-form-wrapper">
-      <div class="user-info-inputs">
+      <div v-if="requireLogin" class="user-info-inputs login-reply-box">
+        <div v-if="isLoggedIn" class="reply-login-tip">当前以 {{ commentForm.nickname }} 身份回复</div>
+        <div v-else class="reply-login-tip">登录后才能回复论坛评论</div>
+        <el-input
+          v-model="commentForm.content"
+          :placeholder="`回复 @${comment.nickname}`"
+          type="textarea"
+        ></el-input>
+      </div>
+      <div v-else class="user-info-inputs">
         <el-row :gutter="20">
           <el-col :span="12">
             <el-input v-model="commentForm.nickname" type="text" placeholder="昵称 (必填)"
@@ -55,9 +66,13 @@
         :replyingTo="replyingTo"
         :commentForm="commentForm"
         :defaultAvatar="defaultAvatar"
+        :requireLogin="requireLogin"
+        :isLoggedIn="isLoggedIn"
+        :isAdmin="isAdmin"
         @show-reply="(c) => $emit('show-reply', c)"
         @submit-reply="(parent) => $emit('submit-reply', parent)"
         @cancel-reply="$emit('cancel-reply')"
+        @delete-comment="(comment) => $emit('delete-comment', comment)"
       />
     </div>
   </div>
@@ -73,11 +88,20 @@ const props = defineProps({
   replyingTo: { type: [Number, String], default: null },
   commentForm: { type: Object, required: true },
   defaultAvatar: { type: String, required: true },
+  requireLogin: { type: Boolean, default: false },
+  isLoggedIn: { type: Boolean, default: false },
+  isAdmin: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['show-reply', 'submit-reply', 'cancel-reply'])
+const emit = defineEmits(['show-reply', 'submit-reply', 'cancel-reply', 'delete-comment'])
+
+const canDeleteComment = (comment) => Boolean(props.isAdmin || comment?.ownedByCurrentUser)
 
 const submitReply = () => {
+  if (props.requireLogin && !props.isLoggedIn) {
+    alert('请先登录后再回复！')
+    return
+  }
   if (!props.commentForm.content.trim()) {
     alert('回复内容不能为空！')
     return
@@ -141,6 +165,20 @@ const formatDate = (dateString) => {
   font-size: 12px;
   color: #999;
 }
+
+.owner-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(64, 158, 255, 0.12);
+  color: #409eff;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 8px;
+}
 .comment-body {
   font-size: 14px;
   color: #555;
@@ -160,6 +198,11 @@ const formatDate = (dateString) => {
   color: #888;
   cursor: pointer;
   font-size: 13px;
+}
+
+.danger-btn {
+  color: #f56c6c;
+  margin-left: 12px;
 }
 .reply-form-wrapper {
   margin-top: 15px;
@@ -186,6 +229,17 @@ const formatDate = (dateString) => {
   font-size: 14px;
   box-sizing: border-box;
   resize: vertical;
+}
+
+.reply-login-tip {
+  color: #8a8a8a;
+  font-size: 13px;
+}
+
+.login-reply-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 .form-footer {
   display: flex;

@@ -74,7 +74,7 @@ public class SecurityConfig {
                         .requestMatchers("/images/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
                         // 放行登录接口、刷新 Token 接口
-                        .requestMatchers("/admin/auth/**").permitAll()
+                        .requestMatchers("/admin/auth/**", "/api/auth/**").permitAll()
 
                         // 3. 公共只读接口 (GET 请求) - 所有人(包括游客)可访问
                         .requestMatchers(HttpMethod.GET,
@@ -84,12 +84,16 @@ public class SecurityConfig {
                                 "/api/moments/**",
                                 "/api/friendlinks/**",
                                 "/api/archive/**",
-                                "/api/comments/**"
+                                "/api/comments/**",
+                                "/api/post/**"
                         ).permitAll()
                         // 评论接口 (post 请求)
                         .requestMatchers(HttpMethod.POST,
                                 "/api/comments/**"
-                        ).permitAll()
+                        ).authenticated()
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/post/**"
+                        ).authenticated()
 
                         // 4. 管理员写操作 (POST/PUT/DELETE) - 只有 ADMIN 角色可访问
                         // 包含了新增(POST)、修改(PUT)、删除(DELETE)、上传(POST)
@@ -124,7 +128,12 @@ public class SecurityConfig {
 
         // 允许的前端域名 (上线时建议修改为具体的域名，开发环境可用 *)
         // 如果 allowCredentials 为 true，这里不能写 "*"，必须写具体域名
-        configuration.setAllowedOrigins(List.of("http://8.162.7.124:8080", "http://8.162.7.124:3000" ));
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:3000",
+                "http://127.0.0.1:3000",
+                "http://8.162.7.124:8080",
+                "http://8.162.7.124:3000"
+        ));
 
         // 允许的方法
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

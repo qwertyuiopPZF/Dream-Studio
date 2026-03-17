@@ -24,6 +24,8 @@ public class CommentVO {
      */
     private Long id;
 
+    private Long userId;
+
     /**
      * 昵称
      */
@@ -98,6 +100,8 @@ public class CommentVO {
      * 回复该评论的评论
      */
     private List<CommentVO> replyComments = new ArrayList<>();
+
+    private Boolean ownedByCurrentUser;
 }
 
 

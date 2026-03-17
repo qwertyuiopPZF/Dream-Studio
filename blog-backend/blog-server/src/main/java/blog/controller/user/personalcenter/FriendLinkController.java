@@ -1,4 +1,4 @@
-package blog.controller.admin;
+package blog.controller.user.personalcenter;
 
 import blog.dto.FriendLinkDTO;
 import blog.dto.FriendLinkQueryDTO;

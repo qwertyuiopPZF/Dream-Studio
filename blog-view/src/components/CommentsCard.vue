@@ -4,7 +4,29 @@
 
     <!-- 主评论表单 -->
     <div class="comment-form-wrapper">
-      <div class="user-info-inputs">
+      <div v-if="requireLogin" class="login-comment-box">
+        <template v-if="isLoggedIn">
+          <div class="current-user-bar">
+            <el-avatar :size="42" :src="currentProfile.avatar">{{ currentProfile.nickname.slice(0, 1) }}</el-avatar>
+            <div>
+              <strong>{{ currentProfile.nickname }}</strong>
+              <p>{{ currentProfile.email || '已登录用户评论' }}</p>
+            </div>
+          </div>
+          <el-input
+            v-model="commentForm.content"
+            placeholder="请输入评论..."
+            :rows="5"
+            type="textarea"
+          />
+        </template>
+        <div v-else class="login-required-panel">
+          <p>登录后才能发表评论或回复，并自动使用你的头像与昵称。</p>
+          <el-button type="primary" @click="router.push('/login')">去登录</el-button>
+        </div>
+      </div>
+
+      <div v-else class="user-info-inputs">
         <el-row :gutter="20">
           <el-col :span="12">
             <el-input v-model="commentForm.nickname" placeholder="昵称 (必填)" />
@@ -30,7 +52,7 @@
       </div>
 
       <div class="form-footer">
-        <el-button @click="submitRootComment"> 发表评论</el-button>
+        <el-button @click="submitRootComment" :disabled="requireLogin && !isLoggedIn"> 发表评论</el-button>
       </div>
     </div>
 
@@ -47,10 +69,14 @@
         :comment="comment"
         :replyingTo="replyingToId"
         :defaultAvatar="defaultAvatar"
+        :requireLogin="requireLogin"
+        :isLoggedIn="isLoggedIn"
+        :isAdmin="isAdmin"
         @show-reply="handleShowReply"
         :commentForm="commentForm"
         @submit-reply="handleSubmitReply"
         @cancel-reply="handleCancelReply"
+        @delete-comment="handleDeleteComment"
       />
     </div>
     <div v-else-if="!loading" class="no-comments-tip">暂无评论，快来抢沙发吧！</div>
@@ -60,14 +86,26 @@
 </template>
 
 <script setup>
-import { ref, onMounted, defineProps, reactive, onBeforeMount } from 'vue'
-import { fetchComments, createComment } from '@/api/comment.js'
+import { ref, onMounted, defineProps, reactive, onBeforeMount, computed, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { fetchComments, createComment, deleteComment } from '@/api/comment.js'
+import { saveCommunityComment } from '@/utils/community'
+import { useUserStore } from '@/store/user'
 import CommentNode from './CommentNode.vue'
 import defaultAvatar from '../assets/(5).png'
 const props = defineProps({
   blogId: { type: [Number, String], default: null },
   page: { type: String, default: null },
+  requireLogin: { type: Boolean, default: false },
 })
+const emit = defineEmits(['count-changed'])
+
+const router = useRouter()
+const userStore = useUserStore()
+const currentProfile = computed(() => userStore.profile)
+const isLoggedIn = computed(() => userStore.isLoggedIn)
+const isAdmin = computed(() => userStore.isAdmin)
 
 const totalComments = ref(0)
 
@@ -81,6 +119,20 @@ const commentForm = reactive({
   page: '',
   blogId: 0,
 })
+
+const fillLoginProfile = () => {
+  if (!props.requireLogin || !isLoggedIn.value) return
+  commentForm.nickname = currentProfile.value.nickname || ''
+  commentForm.email = currentProfile.value.email || ''
+  commentForm.avatar = currentProfile.value.avatar || defaultAvatar
+  commentForm.website = ''
+}
+
+watch(
+  () => [props.requireLogin, currentProfile.value.nickname, currentProfile.value.email, currentProfile.value.avatar, isLoggedIn.value],
+  () => fillLoginProfile(),
+  { immediate: true },
+)
 
 const loading = ref(false)
 const error = ref(null)
@@ -128,6 +180,7 @@ const getComments = async () => {
     const res = await fetchComments(params)
     const flatList = res || [] // The interceptor returns the data directly
     totalComments.value = flatList.length // 在这里更新总数
+    emit('count-changed', flatList.length)
     comments.value = buildTree(flatList)
     if (flatList.length < pagination.pageSize) noMore.value = true
   } catch (err) {
@@ -139,6 +192,11 @@ const getComments = async () => {
 }
 
 const submitComment = async (commentData) => {
+  if (!isLoggedIn.value) {
+    ElMessage.warning('请先登录后再评论')
+    router.push('/login')
+    return
+  }
   if (!commentForm.nickname.trim()) return alert('昵称不能为空！')
   if (!commentForm.content.trim()) return alert('内容不能为空！')
 
@@ -151,6 +209,20 @@ const submitComment = async (commentData) => {
     localStorage.setItem('comment_avatar', commentForm.avatar)
     commentForm.page = props.page
     clearForm.blogId = props.blogId
+    saveCommunityComment({
+      nickname: commentForm.nickname,
+      email: commentForm.email,
+      avatar: commentForm.avatar,
+      content: commentData.content,
+      page: commentData.page || '',
+      blogId: commentData.blogId || null,
+      parentCommentId: commentData.parentCommentId || null,
+      createTime: new Date().toISOString(),
+    })
+    localStorage.setItem(
+      'profile_forum_comment_count',
+      String((Number(localStorage.getItem('profile_forum_comment_count')) || 0) + 1),
+    )
 
     alert('评论成功！')
     resetAndReload()
@@ -167,6 +239,11 @@ const submitRootComment = () => {
 }
 
 const handleShowReply = (comment) => {
+  if (!isLoggedIn.value) {
+    ElMessage.warning('请先登录后再回复')
+    router.push('/login')
+    return
+  }
   replyingToId.value = comment.id
 }
 
@@ -184,8 +261,28 @@ const handleCancelReply = () => {
   replyingToId.value = null
 }
 
+const handleDeleteComment = async (comment) => {
+  try {
+    await ElMessageBox.confirm('确定删除这条评论吗？删除后其子评论也会一并删除。', '删除评论', {
+      type: 'warning',
+      confirmButtonText: '删除',
+      cancelButtonText: '取消',
+    })
+    await deleteComment(comment.id)
+    ElMessage.success('评论已删除')
+    resetAndReload()
+  } catch (error) {
+    if (error === 'cancel') return
+    ElMessage.error(error?.message || '删除评论失败')
+  }
+}
+
 const clearForm = () => {
   commentForm.content = ''
+  if (props.requireLogin && isLoggedIn.value) {
+    fillLoginProfile()
+    return
+  }
   commentForm.nickname = ''
   commentForm.email = ''
   commentForm.website = ''
@@ -217,6 +314,42 @@ onMounted(getComments)
 }
 .comment-form-wrapper {
   margin-bottom: 30px;
+}
+
+.login-comment-box {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.current-user-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.current-user-bar strong {
+  display: block;
+  color: var(--app-text-color);
+}
+
+.current-user-bar p,
+.login-required-panel p {
+  margin: 4px 0 0;
+  color: #8a8a8a;
+}
+
+.login-required-panel {
+  padding: 18px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
 
 .input-field {

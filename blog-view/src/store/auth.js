@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { clearUserProfileStorage } from "@/utils/userProfile";
+import { useUserStore } from "@/store/user";
 
 export const useAuthStore = defineStore("auth", () => {
   // 从 localStorage 初始化，防止刷新页面 Token 丢失
@@ -16,10 +18,13 @@ export const useAuthStore = defineStore("auth", () => {
 
   // 退出登录，清理 Token
   function logout() {
+    const userStore = useUserStore();
     accessToken.value = "";
     refreshToken.value = "";
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    clearUserProfileStorage();
+    userStore.clearProfile();
   }
 
   return { accessToken, refreshToken, setTokens, logout };

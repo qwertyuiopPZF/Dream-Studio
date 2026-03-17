@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
+@Slf4j
 public class JwtUtil
 {
     @Autowired
@@ -52,12 +54,16 @@ public class JwtUtil
 
         // 将 Refresh Token 存入 Redis，Key 为 username，Value 为 token
         // 作用：实现了服务端对登录状态的控制。如果想踢人下线，直接删 Redis 即可。
-        redisTemplate.opsForValue().set(
-                "REFRESH_TOKEN:" + username,
-                refreshToken,
-                jwtProperties.getRefreshTokenExpiration(),
-                TimeUnit.MILLISECONDS
-        );
+        try {
+            redisTemplate.opsForValue().set(
+                    "REFRESH_TOKEN:" + username,
+                    refreshToken,
+                    jwtProperties.getRefreshTokenExpiration(),
+                    TimeUnit.MILLISECONDS
+            );
+        } catch (Exception e) {
+            log.warn("Redis 不可用，Refresh Token 将仅基于 JWT 本身校验：{}", e.getMessage());
+        }
 
         return refreshToken;
     }
@@ -75,7 +81,20 @@ public class JwtUtil
 
     public boolean validataRefreshToken(String username,String incomingToken)
     {
-        String storedToken = redisTemplate.opsForValue().get("REFRESH_TOKEN:" + username);
-        return storedToken != null && storedToken.equals(incomingToken);
+        try {
+            String storedToken = redisTemplate.opsForValue().get("REFRESH_TOKEN:" + username);
+            if (storedToken != null) {
+                return storedToken.equals(incomingToken);
+            }
+        } catch (Exception e) {
+            log.warn("Redis 不可用，跳过 Refresh Token 存储校验：{}", e.getMessage());
+        }
+
+        try {
+            Claims claims = parseToken(incomingToken);
+            return username.equals(claims.getSubject());
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

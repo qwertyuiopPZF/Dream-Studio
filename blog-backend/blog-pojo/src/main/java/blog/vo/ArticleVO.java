@@ -20,6 +20,8 @@ public class ArticleVO implements Serializable {
      */
     private Long id;
 
+    private Long authorId;
+
     /**
      * 文章标题
      */
@@ -49,6 +51,10 @@ public class ArticleVO implements Serializable {
      * 分类名称
      */
     private String categoryName;
+
+    private String authorNickname;
+
+    private String authorAvatar;
 
     /**
      * 浏览次数

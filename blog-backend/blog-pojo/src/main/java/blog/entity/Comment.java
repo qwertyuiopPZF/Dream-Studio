@@ -24,6 +24,8 @@ public class Comment {
      */
     private Long id;
 
+    private Long userId;
+
     /**
      * 昵称
      */

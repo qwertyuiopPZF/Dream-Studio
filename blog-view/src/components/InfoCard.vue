@@ -3,20 +3,20 @@
     <el-text class="mx-1">
       <el-card class="info-card">
         <div class="avatar-section">
-          <el-avatar shape="square" :size="100" :src="squareUrl" />
+          <el-avatar shape="square" :size="100" :src="profile.avatar">{{ profileInitial }}</el-avatar>
         </div>
         <div class="info-section">
-          <h3>Eleven-Mouse</h3>
-          <p>will yow?</p>
+          <h3>{{ profile.nickname }}</h3>
+          <p>{{ profile.bio }}</p>
         </div>
         <div class="social-links">
-          <a href="#" target="_blank"
+          <a href="javascript:void(0)" @click="router.push('/profile')"
             ><el-icon><ChatLineRound /></el-icon
           ></a>
-          <a href="#"
+          <a :href="profile.email ? `mailto:${profile.email}` : 'javascript:void(0)'"
             ><el-icon><Message /></el-icon
           ></a>
-          <a href="#"
+          <a href="javascript:void(0)" @click="copyProfileLabel"
             ><el-icon><Share /></el-icon
           ></a>
         </div> </el-card
@@ -26,12 +26,27 @@
 
 <script setup>
 import { ChatLineRound, Message, Share } from '@element-plus/icons-vue'
-import { reactive, toRefs } from 'vue'
-const state = reactive({
-  squareUrl: '/avatar.png',
-})
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/store/user'
 
-const { squareUrl } = toRefs(state)
+const router = useRouter()
+const userStore = useUserStore()
+
+const profile = computed(() => userStore.profile)
+const profileInitial = computed(() => profile.value.nickname?.slice(0, 1)?.toUpperCase() || 'D')
+
+const copyProfileLabel = async () => {
+  try {
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(`${profile.value.nickname} · ${profile.value.bio}`)
+      ElMessage.success('个人信息已复制')
+    }
+  } catch (error) {
+    console.error('复制个人信息失败', error)
+  }
+}
 </script>
 
 <style scoped>

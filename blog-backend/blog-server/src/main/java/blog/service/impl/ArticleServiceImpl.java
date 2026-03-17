@@ -7,6 +7,7 @@ import blog.mapper.ArticleMapper;
 import blog.mapper.CommentMapper;
 import blog.mapper.TagsMapper;
 import blog.service.ArticleService;
+import blog.service.UserAccountService;
 import blog.service.ViewCountService;
 import blog.vo.ArticleVO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,6 +42,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private ViewCountService viewCountService;
 
+    @Autowired
+    private UserAccountService userAccountService;
+
 
 
     @Override
@@ -50,6 +54,10 @@ public class ArticleServiceImpl implements ArticleService {
 
         Article article = new Article();
         copyProperties(articleDTO, article);
+
+        if (article.getAuthorId() == null) {
+            article.setAuthorId(userAccountService.ensureDefaultAdminAndGetId());
+        }
 
 
         LocalDateTime now = LocalDateTime.now();
@@ -136,6 +144,12 @@ public class ArticleServiceImpl implements ArticleService {
             return articles;
         }
 
+        if (queryDTO.getAuthorId() != null) {
+            articles = articles.stream()
+                    .filter(article -> article.getAuthorId() != null && article.getAuthorId().equals(queryDTO.getAuthorId()))
+                    .toList();
+        }
+
         // 提取所有文章中的所有标签ID
         java.util.Set<Long> tagIds = articles.stream()
                 .filter(article -> article.getTags() != null && !article.getTags().trim().isEmpty())
@@ -172,11 +186,10 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleVO getArticleById(Long id,String userIp)
     {
         log.info("查询文章详情，ID：{}", id);
-        ArticleDTO article = articleMapper.selectById(id);
-
-        ArticleVO vo = new ArticleVO();
-        BeanUtils.copyProperties(article,vo);
-        vo.setId(id);
+        ArticleVO vo = articleMapper.selectById(id);
+        if (vo == null) {
+            return null;
+        }
         viewCountService.incrementViewCount(id,userIp);
 
         Integer viewCount = viewCountService.getViewCount(id);
@@ -201,11 +214,11 @@ public class ArticleServiceImpl implements ArticleService {
 
         if (article.getStatus() != null && article.getStatus() == 1)
         {
-            ArticleDTO existingArticle = articleMapper.selectById(id);
-            if (existingArticle != null && existingArticle.getStatus() != 1)
-            {
-                article.setPublishTime(LocalDateTime.now());
-            }
+                ArticleVO existingArticle = articleMapper.selectById(id);
+                if (existingArticle != null && existingArticle.getStatus() != 1)
+                {
+                    article.setPublishTime(LocalDateTime.now());
+                }
         }
 
 

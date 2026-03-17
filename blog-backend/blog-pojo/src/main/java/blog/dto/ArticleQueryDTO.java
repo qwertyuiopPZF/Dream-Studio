@@ -40,6 +40,11 @@ public class ArticleQueryDTO implements Serializable {
     private Long tagId;
 
     /**
+     * 作者用户ID
+     */
+    private Long authorId;
+
+    /**
      * 页码
      */
     private Integer page;

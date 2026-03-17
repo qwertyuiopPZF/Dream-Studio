@@ -1,13 +1,10 @@
-package blog.controller.admin;
+package blog.controller.user.personalcenter;
 
-import blog.dto.CommentDTO;
-import blog.dto.CommentQueryDTO;
 import blog.result.Result;
 import blog.service.CommentService;
 import blog.vo.CommentVO;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
