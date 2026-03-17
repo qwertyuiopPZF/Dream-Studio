@@ -3,17 +3,103 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+<<<<<<< HEAD
+    <!-- 继承Spring Boot父级POM -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.4</version>
+=======
     <!-- 继承Spring Boot父级POM，提供默认配置和依赖管理 -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.5.6</version>
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
     </parent>
 
     <!-- 项目基本信息 -->
     <groupId>dream-studio</groupId>
     <artifactId>Dream-Studio</artifactId>
     <version>1.0-SNAPSHOT</version>
+<<<<<<< HEAD
+    <packaging>pom</packaging>
+
+    <!-- 子模块定义 -->
+    <modules>
+        <module>blog-common</module>
+        <module>blog-pojo</module>
+        <module>blog-server</module>
+    </modules>
+
+    <!-- 项目属性配置 -->
+    <properties>
+        <java.version>17</java.version>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
+        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+        <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
+        <maven-install-plugin.version>3.1.1</maven-install-plugin.version>
+        <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
+        <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
+        <!-- 统一版本管理 -->
+        <mybatis-plus.version>3.5.7</mybatis-plus.version>
+        <jjwt.version>0.11.5</jjwt.version>
+    </properties>
+
+    <!-- 依赖管理：统一管理版本，子模块按需引入 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- 内部模块依赖 -->
+            <dependency>
+                <groupId>dream-studio</groupId>
+                <artifactId>blog-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dream-studio</groupId>
+                <artifactId>blog-pojo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dream-studio</groupId>
+                <artifactId>blog-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- MyBatis-Plus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <!-- JWT -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jjwt.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jjwt.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- 父POM中只放所有模块共用的依赖 -->
+    <dependencies>
+        <!-- Lombok（所有模块都可能用到） -->
+=======
     <packaging>pom</packaging> <!-- 父级项目使用pom打包方式 -->
 
     <!-- 子模块定义 -->
@@ -45,7 +131,6 @@
             <version>3.0.5</version>
         </dependency>
 
-
         <!-- MySQL数据库连接器 -->
         <dependency>
             <groupId>com.mysql</groupId>
@@ -54,10 +139,18 @@
         </dependency>
 
         <!-- Lombok依赖，提供注解简化代码 -->
+
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.42</version>
+<<<<<<< HEAD
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 测试依赖（所有模块都可能用到） -->
+=======
         </dependency>
 
 
@@ -68,11 +161,14 @@
         </dependency>
 
         <!-- Spring Boot测试启动器 -->
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+<<<<<<< HEAD
+=======
 
         <!-- MyBatis测试依赖 -->
         <dependency>
@@ -122,23 +218,76 @@
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
-
-        <!-- 4. Hutool工具类 站式工具类库-->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.8.22</version>
-        </dependency>
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
     </dependencies>
 
     <!-- 构建配置 -->
     <build>
+<<<<<<< HEAD
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven-site-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven-resources-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${maven-clean-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>${maven-install-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven-deploy-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>3.2.4</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+=======
         <plugins>
             <!-- Maven编译插件，配置Lombok注解处理器 -->
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
+<<<<<<< HEAD
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+=======
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -149,13 +298,19 @@
                 </configuration>
             </plugin>
 
+<<<<<<< HEAD
+=======
             <!-- Spring Boot Maven插件，用于打包和运行应用 -->
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <excludes>
+<<<<<<< HEAD
+=======
                         <!-- 排除Lombok依赖，避免打包时包含不必要的依赖 -->
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
                         <exclude>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
@@ -163,6 +318,21 @@
                     </excludes>
                 </configuration>
             </plugin>
+<<<<<<< HEAD
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                    <skipDeploy>true</skipDeploy>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
+=======
+        </plugins>
+    </build>
+</project>
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241

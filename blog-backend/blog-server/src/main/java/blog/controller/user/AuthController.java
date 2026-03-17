@@ -1,59 +1,59 @@
 package blog.controller.user;
 
+import blog.dto.Login.GithubLoginDTO;
 import blog.dto.Login.LoginRequest;
 import blog.dto.Login.LoginResponse;
-import blog.dto.LoginDTO;
 import blog.result.Result;
 import blog.service.AuthService;
-import blog.vo.AuthVO;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.Map;
 
-/**
- * 认证控制器
- * 处理登录、登出等认证相关操作
- *
- * @author Eleven
- * @version 1.0
- */
-@RestController
-@RequestMapping("/user/auth")
-@CrossOrigin(origins = "http://8.162.7.124:3000")
+@RestController("userAuthController")
+@RequestMapping("/api/auth")
 @Slf4j
-public class AuthController {
-
-
+public class AuthController
+{
     @Autowired
     private AuthService authService;
 
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest request) {
-        return authService.login(request);
+    @ApiOperation("用户名密码登录")
+    public Result<LoginResponse> login(@RequestBody LoginRequest request)
+    {
+        return Result.success(authService.login(request));
     }
 
-    /**
-      github登录
-     */
+    @GetMapping("/github/url")
+    @ApiOperation("获取 GitHub 登录地址")
+    public Result<Map<String, String>> getGithubLoginUrl()
+    {
+        return Result.success(authService.buildGithubAuthorizePayload());
+    }
+
     @PostMapping("/github/login")
-    @ApiOperation(value = "GitHub登录回调", notes = "通过code获取GitHub用户信息并登录")
-    public Result<Map<String,Object>> githubLogin(@RequestBody String code) {
-        Map<String,Object> loginResult = authService. handleGithubLogin(code);
-        return Result.success(loginResult);
+    @ApiOperation("通过 GitHub code 登录")
+    public Result<LoginResponse> githubLogin(@RequestBody GithubLoginDTO request)
+    {
+        return Result.success(authService.loginByGithub(request));
     }
 
-
-    @PostMapping("/complete-info")
-    @ApiOperation(value = "信息补全", notes = "补全必要的phone和password")
-    public Result<Map<String, Object>> completeInfo(
-            @RequestHeader("Authorization") String token,
-            @RequestParam String phone,
-            @RequestParam String password) {
-        Result<Map<String, Object>> result = authService.completeInfo(token, phone, password);
-        return result;
+    @GetMapping("/github/callback")
+    @ApiOperation("GitHub OAuth 回调")
+    public Result<LoginResponse> githubCallback(@RequestParam String code,
+                                                @RequestParam(required = false) String state)
+    {
+        GithubLoginDTO request = new GithubLoginDTO();
+        request.setCode(code);
+        request.setState(state);
+        return Result.success(authService.loginByGithub(request));
     }
 }

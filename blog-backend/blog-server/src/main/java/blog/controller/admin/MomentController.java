@@ -1,4 +1,9 @@
+<<<<<<< HEAD
+
+/*package blog.controller.admin;
+=======
 package blog.controller.admin;
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
 
 import blog.dto.MomentDTO;
 import blog.dto.MomentQueryDTO;
@@ -38,6 +43,10 @@ public class MomentController
     /**
      * 获取动态列表
      */
+<<<<<<< HEAD
+/*
+=======
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
     @GetMapping
     @ApiOperation("获取动态列表")
     public Result<PageInfo<MomentVO>> getMoment(@RequestParam(defaultValue = "1") int page,
@@ -93,6 +102,10 @@ public class MomentController
 
         return Result.success();
     }
+<<<<<<< HEAD
+}
+*/
+=======
 
 
 
@@ -101,3 +114,4 @@ public class MomentController
 
 
 }
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241

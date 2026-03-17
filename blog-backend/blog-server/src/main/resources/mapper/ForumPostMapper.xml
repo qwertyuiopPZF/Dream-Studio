@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blog.mapper.ForumPostMapper">
+
+    <sql id="ForumPostSelectColumns">
+        SELECT
+            fp.id,
+            fp.author_id AS authorId,
+            fp.title,
+            fp.summary,
+            fp.content,
+            fp.nickname,
+            fp.avatar,
+            ua.nickname AS authorNickname,
+            ua.avatar AS authorAvatar,
+            fp.view_count AS viewCount,
+            (
+                SELECT COUNT(*)
+                FROM comment c
+                WHERE c.page = CONCAT('forum-post-', fp.id)
+                  AND c.status = TRUE
+            ) AS commentCount,
+            fp.is_pinned AS isPinned,
+            fp.is_featured AS isFeatured,
+            fp.create_time AS createTime,
+            fp.update_time AS updateTime,
+            GREATEST(
+                COALESCE(fp.last_activity_time, fp.update_time, fp.create_time),
+                COALESCE(
+                    (
+                        SELECT MAX(c.create_time)
+                        FROM comment c
+                        WHERE c.page = CONCAT('forum-post-', fp.id)
+                          AND c.status = TRUE
+                    ),
+                    fp.create_time
+                )
+            ) AS lastActivityTime
+        FROM forum_post fp
+        LEFT JOIN user_account ua ON fp.author_id = ua.id
+    </sql>
+
+    <sql id="ForumPostWhere">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    fp.title LIKE CONCAT('%', #{keyword}, '%')
+                    OR fp.summary LIKE CONCAT('%', #{keyword}, '%')
+                    OR fp.nickname LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+            <if test="excludeId != null">
+                AND fp.id != #{excludeId}
+            </if>
+            <if test="featuredOnly != null and featuredOnly">
+                AND fp.is_featured = TRUE
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectPage" resultType="blog.vo.ForumPostVO">
+        <include refid="ForumPostSelectColumns"/>
+        <include refid="ForumPostWhere"/>
+        <choose>
+            <when test="sort == 'hot'">
+                ORDER BY fp.is_pinned DESC, fp.is_featured DESC, commentCount DESC, fp.view_count DESC, lastActivityTime DESC
+            </when>
+            <when test="sort == 'featured'">
+                ORDER BY fp.is_featured DESC, fp.is_pinned DESC, lastActivityTime DESC, fp.create_time DESC
+            </when>
+            <otherwise>
+                ORDER BY fp.is_pinned DESC, lastActivityTime DESC, fp.create_time DESC
+            </otherwise>
+        </choose>
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countPage" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM forum_post fp
+        <include refid="ForumPostWhere"/>
+    </select>
+
+    <select id="selectById" resultType="blog.vo.ForumPostVO">
+        <include refid="ForumPostSelectColumns"/>
+        WHERE fp.id = #{id}
+    </select>
+
+    <update id="updateMeta" parameterType="blog.entity.ForumPost">
+        UPDATE forum_post
+        <set>
+            <if test="isPinned != null">is_pinned = #{isPinned},</if>
+            <if test="isFeatured != null">is_featured = #{isFeatured},</if>
+            update_time = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+</mapper>

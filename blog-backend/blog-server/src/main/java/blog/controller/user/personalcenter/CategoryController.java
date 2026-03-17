@@ -1,4 +1,4 @@
-package blog.controller.admin;
+package blog.controller.user.personalcenter;
 
 import blog.dto.CategoryDTO;
 import blog.result.Result;

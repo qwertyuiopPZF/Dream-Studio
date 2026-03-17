@@ -29,6 +29,8 @@ public interface CommentService {
 
     List<CommentVO> getComments(String page, Long blogId, Long parentCommentId);
 
+    CommentVO getCommentById(Long id);
+
     void deleteCommentById(Long id);
 
     void updateStatus(Long id, Boolean status);

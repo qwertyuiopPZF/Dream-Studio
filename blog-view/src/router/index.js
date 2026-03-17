@@ -1,8 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/store/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/Login.vue'),
+      meta: { public: true },
+    },
     {
       path: '/',
       name: 'layout',
@@ -39,7 +46,21 @@ const router = createRouter({
           name: 'friendLinks',
           component: () => import('@/views/FriendLinks.vue'),
         },
-
+        {
+          path: 'forum',
+          name: 'forum',
+          component: () => import('@/views/Forum.vue'),
+        },
+        {
+          path: 'forum/:id',
+          name: 'forumPostDetail',
+          component: () => import('@/views/ForumPostDetail.vue'),
+        },
+        {
+          path: 'profile',
+          name: 'profileCenter',
+          component: () => import('@/views/ProfileCenter.vue'),
+        },
         {
           path: 'article/:id',
           name: 'articleDetail',
@@ -68,6 +89,25 @@ const router = createRouter({
       return false // 返回 false 表示不干预滚动
     }
   },
+})
+
+router.beforeEach((to) => {
+  const authStore = useAuthStore()
+  const isPublicRoute = Boolean(to.meta?.public)
+  const isLoggedIn = Boolean(authStore.accessToken)
+
+  if (!isLoggedIn && !isPublicRoute) {
+    return {
+      path: '/login',
+      query: { redirect: to.fullPath },
+    }
+  }
+
+  if (isLoggedIn && to.path === '/login' && !to.query.code) {
+    return '/profile'
+  }
+
+  return true
 })
 
 export default router

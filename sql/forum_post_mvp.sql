@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS `forum_post` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '帖子ID',
+  `title` varchar(200) NOT NULL COMMENT '帖子标题',
+  `summary` varchar(500) DEFAULT NULL COMMENT '帖子摘要',
+  `content` longtext NOT NULL COMMENT '帖子正文（Markdown）',
+  `nickname` varchar(100) NOT NULL COMMENT '发帖昵称',
+  `email` varchar(200) DEFAULT NULL COMMENT '邮箱',
+  `avatar` varchar(500) DEFAULT NULL COMMENT '头像地址',
+  `view_count` int NOT NULL DEFAULT '0' COMMENT '浏览次数',
+  `is_pinned` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否置顶',
+  `is_featured` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否加精',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `last_activity_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后活跃时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_forum_post_activity` (`last_activity_time`),
+  KEY `idx_forum_post_featured` (`is_featured`, `is_pinned`),
+  KEY `idx_forum_post_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='论坛帖子表';

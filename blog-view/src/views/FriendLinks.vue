@@ -51,7 +51,7 @@
       </el-text>
     </div>
 
-    <comments-card :page="'friends'" />
+    <comments-card :page="'friends'" :require-login="true" />
   </div>
 </template>
 <script setup>

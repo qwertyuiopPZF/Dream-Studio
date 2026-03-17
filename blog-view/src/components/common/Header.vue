@@ -52,6 +52,7 @@
         <el-menu-item index="/about"
           ><el-icon><UserFilled /></el-icon>About</el-menu-item
         >
+
         <el-menu-item index="/friendlinks"
           ><el-icon><Link /></el-icon>Links</el-menu-item
         >
@@ -60,6 +61,16 @@
         <a href="https://github.com" target="_blank">
           <span>GitHub</span> <el-icon size="20"><Promotion /></el-icon>
         </a>
+      </div>
+      <div class="user-entry" @click="goToProfile">
+        <el-badge v-if="isAdmin" value="Admin" class="user-badge">
+          <el-avatar :size="36" :src="userAvatar">{{ userInitial }}</el-avatar>
+        </el-badge>
+        <el-avatar v-else :size="36" :src="userAvatar">{{ userInitial }}</el-avatar>
+        <div class="user-meta">
+          <span class="user-name">{{ displayName }}</span>
+          <small>{{ isLoggedIn ? '个人中心' : '游客模式' }}</small>
+        </div>
       </div>
       <theme-switcher class="theme-switch" />
     </div>
@@ -75,10 +86,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, onUnmounted } from 'vue'
+import { ref, onMounted, watch, onUnmounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { fetchCategories } from '@/api/categories'
 import { fetchArticles } from '@/api/article.js'
+import { useUserStore } from '@/store/user'
 import {
   Search,
   Link,
@@ -88,17 +100,27 @@ import {
   WalletFilled,
   Promotion,
   Comment,
+  ChatDotRound,
 } from '@element-plus/icons-vue'
 import ThemeSwitcher from './ThemeSwitcher.vue'
 
+
 const route = useRoute()
 const router = useRouter()
+const userStore = useUserStore()
 const activeIndex = ref('/home')
 const searchInput = ref('')
 const categories = ref([])
 const searchLoading = ref(false)
 const currentCategoryId = ref(null)
 const scrollProgress = ref(0)
+
+const currentProfile = computed(() => userStore.profile)
+const isLoggedIn = computed(() => userStore.isLoggedIn)
+const displayName = computed(() => currentProfile.value.nickname)
+const userAvatar = computed(() => currentProfile.value.avatar)
+const userInitial = computed(() => displayName.value?.slice(0, 1)?.toUpperCase() || 'D')
+const isAdmin = computed(() => userStore.isAdmin)
 
 // 获取分类列表
 const loadCategories = async () => {
@@ -115,6 +137,8 @@ watch(
   (newPath) => {
     if (newPath === '/home' || newPath === '/') {
       activeIndex.value = '/home'
+    } else if (newPath.startsWith('/forum')) {
+      activeIndex.value = '/forum'
     } else if (newPath.startsWith('/category/')) {
       activeIndex.value = '/categories'
       currentCategoryId.value = route.params.id
@@ -206,6 +230,10 @@ const handleSelectArticle = (item) => {
   // 跳转后清空输入内容
   searchInput.value = ''
 }
+
+const goToProfile = () => {
+  router.push('/profile')
+}
 </script>
 
 <style scoped>
@@ -271,7 +299,48 @@ const handleSelectArticle = (item) => {
 }
 
 .theme-switch {
-  margin-left: 20px;
+  margin-left: 16px;
+}
+
+.user-entry {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 18px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.user-entry:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.user-meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.user-name {
+  color: var(--app-text-color);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.user-meta small {
+  color: #8d8d8d;
+}
+
+.user-badge :deep(.el-badge__content) {
+  transform: translateY(-30%) translateX(30%);
+}
+
+@media screen and (max-width: 1200px) {
+  .user-meta {
+    display: none;
+  }
 }
 
 .header-wrapper {

@@ -6,7 +6,9 @@ import blog.entity.Article;
 import blog.entity.Comment;
 import blog.mapper.ArticleMapper;
 import blog.mapper.CommentMapper;
+import blog.mapper.ForumPostMapper;
 import blog.service.CommentService;
+import blog.vo.ArticleVO;
 import blog.vo.CommentVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -32,6 +34,9 @@ public class CommentServiceImpl implements CommentService {
     private CommentMapper commentMapper;
     @Autowired
     private ArticleMapper articleMapper;
+
+    @Autowired
+    private ForumPostMapper forumPostMapper;
 
     // 从配置文件 application.yml 中读取博主邮箱
     @Value("${blog.owner.email:your-email@example.com}")
@@ -91,6 +96,7 @@ public class CommentServiceImpl implements CommentService {
         }
 
         commentMapper.insert(comment);
+        touchForumPostLastActivity(comment.getPage());
         log.info("评论创建成功，ID：{}", comment.getId());
     }
 
@@ -99,6 +105,12 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Long countTotal() {
         return commentMapper.countTotal();
+    }
+
+    @Override
+    public CommentVO getCommentById(Long id)
+    {
+        return commentMapper.selectById(id);
     }
 
     /**
@@ -120,7 +132,7 @@ public class CommentServiceImpl implements CommentService {
         {
             if(vo.getBlogId() != null)
             {
-                ArticleDTO article = articleMapper.selectById(vo.getBlogId());
+                ArticleVO article = articleMapper.selectById(vo.getBlogId());
                 if(article != null)
                 {
                     vo.setTitle(article.getTitle());
@@ -162,6 +174,20 @@ public class CommentServiceImpl implements CommentService {
     public void updateStatus(Long id, Boolean status)
     {
         commentMapper.updateStatus(id,status);
+    }
+
+    private void touchForumPostLastActivity(String page)
+    {
+        if (page == null || !page.startsWith("forum-post-")) {
+            return;
+        }
+
+        try {
+            Long postId = Long.parseLong(page.substring("forum-post-".length()));
+            forumPostMapper.updateLastActivityTime(postId, LocalDateTime.now());
+        } catch (NumberFormatException e) {
+            log.warn("评论关联的论坛页面标识无法解析：{}", page);
+        }
     }
 
 }

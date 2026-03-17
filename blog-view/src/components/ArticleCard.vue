@@ -6,7 +6,14 @@
           <router-link :to="`/article/${article.id}`">{{ article.title }}</router-link>
         </h6>
         <p class="article-summary">{{ article.summary }}</p>
+
         <div class="article-meta">
+          <span  v-if="article.authorNickname || article.authorAvatar">
+            <el-avatar :size="28" :src="article.authorAvatar || article.avatar">{{
+              authorInitial
+            }}</el-avatar>
+            <span>{{ article.authorNickname || 'null' }}</span>
+          </span>
           <span v-if="article.tags"
             ><el-icon><PriceTag /></el-icon> {{ article.tags }}</span
           >
@@ -17,7 +24,7 @@
             ><el-icon><FolderOpened /></el-icon> {{ article.categoryName }}</span
           >
           <span v-if="article.viewCount"
-          ><el-icon><View /></el-icon>{{ article.viewCount }}</span
+            ><el-icon><View /></el-icon>{{ article.viewCount }}</span
           >
         </div>
 
@@ -30,7 +37,7 @@
 </template>
 
 <script setup>
-import { Clock, FolderOpened, PriceTag,View  } from '@element-plus/icons-vue'
+import { Clock, FolderOpened, PriceTag, View } from '@element-plus/icons-vue'
 import { defineProps, computed } from 'vue'
 
 const props = defineProps({
@@ -49,6 +56,10 @@ const formattedDate = computed(() => {
     month: 'long',
     day: 'numeric',
   })
+})
+
+const authorInitial = computed(() => {
+  return (props.article.authorNickname || 'A').slice(0, 1).toUpperCase()
 })
 </script>
 
@@ -90,6 +101,15 @@ const formattedDate = computed(() => {
 .article-summary {
   color: #7d7d7d;
   line-height: 1.6;
+}
+
+.article-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  color: #666;
+  font-size: 14px;
 }
 
 .article-meta {

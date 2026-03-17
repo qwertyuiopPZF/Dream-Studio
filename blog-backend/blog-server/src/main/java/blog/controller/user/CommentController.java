@@ -4,11 +4,17 @@ import blog.dto.CommentDTO;
 import blog.dto.CommentQueryDTO;
 import blog.result.Result;
 import blog.service.CommentService;
+import blog.service.RateLimitService;
+import blog.service.UserAccountService;
+import blog.utils.IpUtils;
 import blog.vo.CommentVO;
+import blog.vo.UserProfileVO;
 import io.swagger.annotations.ApiOperation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -31,6 +37,12 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private RateLimitService rateLimitService;
+
+    @Autowired
+    private UserAccountService userAccountService;
+
 
     /**
      *   根据页面或文章id查询所有评论
@@ -40,11 +52,19 @@ public class CommentController {
     @GetMapping
     @ApiOperation("查询评论详情")
     public Result<List<CommentVO>> getComments(@RequestParam(required = false) String page,
-                                               @RequestParam(required = false) Long blogId)
+                                               @RequestParam(required = false) Long blogId,
+                                               Authentication authentication)
     {
         log.info("查询评论详情，ID：{}", blogId);
 
         List<CommentVO> comments = commentService.getComments(page,blogId,-1L);
+
+        if (authentication != null && StringUtils.hasText(authentication.getName())) {
+            blog.entity.UserAccount currentUser = userAccountService.findByUsername(authentication.getName());
+            if (currentUser != null) {
+                markOwnership(comments, currentUser.getId());
+            }
+        }
 
         return Result.success(comments);
     }
@@ -56,10 +76,34 @@ public class CommentController {
     @ApiOperation("提交评论")
     public Result postComment(
             @RequestBody CommentDTO commentDTO,
-            jakarta.servlet.http.HttpServletRequest request)
+            jakarta.servlet.http.HttpServletRequest request,
+            Authentication authentication)
     {
 
         try {
+            if (authentication == null || !StringUtils.hasText(authentication.getName())) {
+                return Result.error(401, "请先登录后再评论");
+            }
+
+            UserProfileVO currentUser = userAccountService.getProfileByUsername(authentication.getName());
+            if (currentUser == null) {
+                return Result.error(401, "未找到当前登录用户资料");
+            }
+
+            commentDTO.setNickname(currentUser.getNickname());
+            commentDTO.setEmail(currentUser.getEmail());
+            commentDTO.setAvatar(currentUser.getAvatar());
+            blog.entity.UserAccount currentUserAccount = userAccountService.findByUsername(authentication.getName());
+            if (currentUserAccount != null) {
+                commentDTO.setUserId(currentUserAccount.getId());
+            }
+
+            String clientIp = IpUtils.getClientIpAddress(request);
+            boolean allowed = rateLimitService.tryAcquire("forum-comment-create", clientIp, 12, 600);
+            if (!allowed) {
+                return Result.error("评论过于频繁，请稍后再试");
+            }
+
             // 验证必填参数
             String content = commentDTO.getContent();
             String nickname = commentDTO.getNickname();
@@ -87,7 +131,6 @@ public class CommentController {
             // 默认公开
             commentDTO.setStatus(true);
             // 获取真实用户IP
-            String clientIp = getClientIpAddress(request);
             commentDTO.setIp(clientIp);
 
 
@@ -102,22 +145,49 @@ public class CommentController {
         return Result.success();
     }
 
+    @DeleteMapping("/{id}")
+    @ApiOperation("删除评论")
+    public Result<Void> deleteComment(@PathVariable Long id, Authentication authentication)
+    {
+        if (authentication == null || !StringUtils.hasText(authentication.getName())) {
+            return Result.error(401, "请先登录");
+        }
+
+        CommentVO comment = commentService.getCommentById(id);
+        if (comment == null) {
+            return Result.error("评论不存在");
+        }
+
+        blog.entity.UserAccount currentUser = userAccountService.findByUsername(authentication.getName());
+        if (currentUser == null) {
+            return Result.error(401, "未找到当前登录用户");
+        }
+
+        boolean isAdmin = "ADMIN".equalsIgnoreCase(currentUser.getRole());
+        boolean isAuthor = comment.getUserId() != null && comment.getUserId().equals(currentUser.getId());
+        if (!isAdmin && !isAuthor) {
+            return Result.error(403, "你没有权限删除这条评论");
+        }
+
+        commentService.deleteCommentById(id);
+        return Result.success();
+    }
+
     /**
      * 获取客户端真实IP地址
      */
     private String getClientIpAddress(jakarta.servlet.http.HttpServletRequest request) {
-        String xForwardedFor = request.getHeader("X-Forwarded-For");
-        String xRealIP = request.getHeader("X-Real-IP");
-        String remoteAddr = request.getRemoteAddr();
+        return IpUtils.getClientIpAddress(request);
+    }
 
-        if (xForwardedFor != null && !xForwardedFor.isEmpty() && !"unknown".equalsIgnoreCase(xForwardedFor)) {
-            // X-Forwarded-For可能包含多个IP，取第一个
-            return xForwardedFor.split(",")[0].trim();
+    private void markOwnership(List<CommentVO> comments, Long currentUserId)
+    {
+        for (CommentVO comment : comments) {
+            comment.setOwnedByCurrentUser(comment.getUserId() != null && comment.getUserId().equals(currentUserId));
+            if (comment.getReplyComments() != null && !comment.getReplyComments().isEmpty()) {
+                markOwnership(comment.getReplyComments(), currentUserId);
+            }
         }
-        if (xRealIP != null && !xRealIP.isEmpty() && !"unknown".equalsIgnoreCase(xRealIP)) {
-            return xRealIP;
-        }
-        return remoteAddr != null ? remoteAddr : "unknown";
     }
 }
 

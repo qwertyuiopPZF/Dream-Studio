@@ -5,6 +5,7 @@
 
     <resultMap id="CommentVOMap" type="blog.vo.CommentVO">
         <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
         <result property="nickname" column="nickname"/>
         <result property="email" column="email"/>
         <result property="website" column="website"/>
@@ -21,8 +22,8 @@
     </resultMap>
 
     <insert id="insert" parameterType="blog.entity.Comment" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO comment (nickname, email, website, avatar, ip, content, page, status, notice, create_time, parentCommentId, blog_id)
-        VALUES (#{nickname}, #{email}, #{website}, #{avatar}, #{ip}, #{content}, #{page}, #{status}, #{notice}, NOW(), #{parentCommentId}, #{blogId})
+        INSERT INTO comment (user_id, nickname, email, website, avatar, ip, content, page, status, notice, create_time, parentCommentId, blog_id)
+        VALUES (#{userId}, #{nickname}, #{email}, #{website}, #{avatar}, #{ip}, #{content}, #{page}, #{status}, #{notice}, NOW(), #{parentCommentId}, #{blogId})
     </insert>
 
     <update id="update" parameterType="blog.entity.Comment">

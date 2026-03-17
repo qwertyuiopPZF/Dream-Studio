@@ -1,10 +1,8 @@
-package blog.controller.admin;
+package blog.controller.user.personalcenter;
 
-import blog.dto.CategoryDTO;
 import blog.dto.TagsDTO;
 import blog.result.Result;
 import blog.service.TagsService;
-import blog.vo.CategoryVO;
 import blog.vo.TagsVO;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

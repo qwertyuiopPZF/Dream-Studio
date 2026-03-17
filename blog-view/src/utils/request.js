@@ -1,11 +1,23 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
+import { useAuthStore } from '@/store/auth'
 
 // 创建 axios 实例
 const service = axios.create({
   baseURL: '/api',
   timeout: 10000, // 请求超时时间
 })
+
+service.interceptors.request.use(
+  (config) => {
+    const authStore = useAuthStore()
+    if (authStore.accessToken) {
+      config.headers.Authorization = `Bearer ${authStore.accessToken}`
+    }
+    return config
+  },
+  (error) => Promise.reject(error),
+)
 
 // 响应拦截器
 service.interceptors.response.use(
@@ -33,6 +45,10 @@ service.interceptors.response.use(
   },
   (error) => {
     console.error('Network Error:', error) // for debug
+    if (error.response?.status === 401) {
+      const authStore = useAuthStore()
+      authStore.logout()
+    }
     ElMessage({
       message: error.message || '网络错误，请检查您的连接',
       type: 'error',

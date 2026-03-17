@@ -6,9 +6,25 @@
     <div class="main-content-area">
       <div class="center">
         <el-card v-if="article" class="article-content-card">
-          <div class="article-meta">
-            <span>发布于：{{ formatTime(article.publishTime) }}</span>
+          <div class="article-author-row">
+            <div class="article-author-info">
+              <el-avatar :size="65" :src="article.authorAvatar || defaultAvatar">{{
+                authorInitial
+              }}</el-avatar>
+              <div>
+                <strong>{{ article.authorNickname || 'admin' }}</strong>
+                <p>作者</p>
+              </div>
+            </div>
+            <div class="article-meta">
+              <span>发布于：{{ formatTime(article.publishTime) }}</span>
+            </div>
           </div>
+
+          <div class="article-meta">
+            <span v-if="article.categoryName">分类：{{ article.categoryName }}</span>
+          </div>
+          <el-divider></el-divider>
           <MdPreview
             editorId="preview-only"
             :modelValue="article.content"
@@ -39,15 +55,21 @@
     </div>
     <el-divider></el-divider>
     <!-- 评论区 -->
-    <CommentsCard v-if="article && article.id" :blog-id="article.id" class="comments-section" />
+    <CommentsCard
+      v-if="article && article.id"
+      :blog-id="article.id"
+      :require-login="true"
+      class="comments-section"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { fetchArticleById } from '@/api/article.js'
 import CommentsCard from '@/components/CommentsCard.vue'
+import defaultAvatar from '@/assets/(5).png'
 
 import { MdPreview } from 'md-editor-v3'
 import 'md-editor-v3/lib/preview.css'
@@ -58,6 +80,10 @@ const loading = ref(false)
 const error = ref(null)
 const catalogList = ref([])
 const scrollContainer = ref(null)
+
+const authorInitial = computed(() => {
+  return (article.value?.authorNickname || 'A').slice(0, 1).toUpperCase()
+})
 
 // list 里的 text 就是现在正文里的实际 ID
 const onGetCatalog = (list) => {
@@ -151,9 +177,33 @@ onMounted(async () => {
   opacity: 0; /* 初始状态为透明 */
 }
 
+.article-author-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.article-author-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.article-author-info strong {
+  display: block;
+  color: var(--app-text-color);
+}
+
+.article-author-info p {
+  margin: 4px 0 0;
+  color: #8d8d8d;
+  font-size: 13px;
+}
+
 .article-meta {
   color: var(--app-text-color);
-  float: inline-end;
   margin-left: 25px;
   box-shadow: none;
   border: 0;

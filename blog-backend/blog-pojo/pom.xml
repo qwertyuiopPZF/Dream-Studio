@@ -21,6 +21,19 @@
             <artifactId>lombok</artifactId>
             <version>1.18.42</version>
         </dependency>
+<<<<<<< HEAD
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-annotation</artifactId>
+            <version>3.5.7</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+        </dependency>
+=======
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
     </dependencies>
 
     <build>
