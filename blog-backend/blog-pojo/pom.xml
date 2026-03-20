@@ -10,8 +10,6 @@
      <version>1.0-SNAPSHOT</version>
  </parent>
     <artifactId>blog-pojo</artifactId>
-
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -23,6 +21,7 @@
             <artifactId>lombok</artifactId>
             <version>1.18.42</version>
         </dependency>
+<<<<<<< HEAD
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-annotation</artifactId>
@@ -33,6 +32,8 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
         </dependency>
+=======
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
     </dependencies>
 
     <build>

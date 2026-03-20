@@ -1,6 +1,0 @@
-[shell_environment_policy]
-inherit = "core"
-
-[shell_environment_policy.set]
-HTTPS_PROXY = "http://127.0.0.1:7890"
-HTTP_PROXY = "http://127.0.0.1:7890"

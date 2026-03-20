@@ -32,7 +32,6 @@ public class LoginDTO {
      * 记住我
      */
     private Boolean remember;
-
 }
 
 

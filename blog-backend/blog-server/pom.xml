@@ -4,6 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+<<<<<<< HEAD
     <parent>
         <groupId>dream-studio</groupId>
         <artifactId>Dream-Studio</artifactId>
@@ -18,10 +19,26 @@
         <dependency>
             <groupId>dream-studio</groupId>
             <artifactId>blog-common</artifactId>
+=======
+<parent>
+    <groupId>dream-studio</groupId>
+    <artifactId>Dream-Studio</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</parent>
+    <artifactId>blog-server</artifactId>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>dream-studio</groupId>
+            <artifactId>blog-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
         </dependency>
         <dependency>
             <groupId>dream-studio</groupId>
             <artifactId>blog-pojo</artifactId>
+<<<<<<< HEAD
         </dependency>
 
         <!-- Spring Boot Starters -->
@@ -85,34 +102,52 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
+=======
+            <version>1.0-SNAPSHOT</version>
         </dependency>
-
-        <!-- 工具 -->
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
         </dependency>
-
-        <!-- Swagger -->
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
             <version>1.5.22</version>
         </dependency>
+<<<<<<< HEAD
     </dependencies>
-
+=======
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>6.2.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.42</version>
+        </dependency>
+    </dependencies>
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+<<<<<<< HEAD
+            </plugin>
+        </plugins>
+    </build>
+</project>
+=======
                 <configuration>
                     <mainClass>blog.DreamStudioApplication</mainClass>
                     <excludes>
@@ -130,7 +165,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -143,3 +177,4 @@
         </plugins>
     </build>
 </project>
+>>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
