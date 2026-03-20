@@ -1,7 +1,6 @@
 package blog.controller.user;
 
 import blog.dto.CommentDTO;
-import blog.dto.CommentQueryDTO;
 import blog.result.Result;
 import blog.service.CommentService;
 import blog.service.RateLimitService;
@@ -10,17 +9,13 @@ import blog.utils.IpUtils;
 import blog.vo.CommentVO;
 import blog.vo.UserProfileVO;
 import io.swagger.annotations.ApiOperation;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 评论管理控制器
