@@ -1,1 +1,103 @@
+# Spring Boot应用配置文件
+# 配置数据库连接、模板引擎、服务器端口等信息
+spring:
+  # 数据源配置
+  datasource:
+    url: jdbc:mysql://blog-mysql:3306/eleven_blog?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useOldAliasMetadataBehavior=true&zeroDateTimeBehavior=convertToNull&autoCommit=true&rewriteBatchedStatements=true
+    # 数据库用户名
+    username: root
+    # 数据库密码（请修改为你的MySQL密码）
+    password: 20469960
+    # MySQL驱动类名
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+  data:
+    redis:
+      host: 127.0.0.1
+      password: 123456
+      port: 6379
+      database: 1
+      connect-timeout: 10000ms
+  # 数据库初始化配置
+  sql:
+    init:
+      mode: never  # 由 Docker 初始化脚本处理
+      continue-on-error: false
+jwt:
+  secret: "MySuperSecretKeyForBlogProjectThatIsVeryLongAndSecure123"
+  access-token-expiration: 1800000
+  refresh-token-expiration: 604800000
+  github-token-expiration: 1800000
+
+# 服务器配置
+server:
+  # 应用启动端口
+  port: 8081
+  # Docker环境中需要监听所有网络接口
+  address: 0.0.0.0
+
+# MyBatis配置
+mybatis:
+  # mapper XML配置文件位置
+  mapper-locations: classpath:mapper/*.xml
+  # 实体类包路径（用于类型别名）
+  type-aliases-package: blog.pojo
+  configuration:
+    # 开启驼峰命名转换（数据库字段名user_name转换为Java属性名userName）
+    map-underscore-to-camel-case: true
+    # 打印SQL语句（开发环境）
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#github OAuth配置
+
+github:
+  login:
+    client-id: Ov23liAQWw2iO4f0XHS9
+    client-secret: 57f51845bb55bc07e92193f1f4efc60e1a4b92c9
+    redirect-uri: http://8.162.7.124:8081/api/auth/github/callback
+
+
+# 日志配置
+logging:
+  level:
+    blog:
+      # mapper层日志级别为debug，便于SQL调试
+      mapper: debug
+      # service层日志级别为info
+      service: info
+      # controller层日志级别为info
+      controller: info
+    org.springframework.security: debug
+    org.springframework.web: debug
+
+# 文件上传配置
+file:
+  upload-dir: E:/blog-writing
+  upload-path: /images/**
+
+# Spring Boot Actuator - 健康检查
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+  health:
+    db:
+      enabled: true
+
+blog:
+  owner:
+    # 你的博主邮箱
+    email: 3331379576@qq.com
+    # 你的博主昵称
+    nickname: 困醒
+    # 你的博主头像URL
+    avatar: static/images/Image_1761740285982.jpg
+
 

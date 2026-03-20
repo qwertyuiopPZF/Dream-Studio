@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "github.oauth")
+@ConfigurationProperties(prefix = "github.login")
 public class GithubOauthProperties
 {
     private String clientId;

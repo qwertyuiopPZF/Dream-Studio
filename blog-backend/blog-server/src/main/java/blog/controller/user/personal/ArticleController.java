@@ -1,4 +1,4 @@
-package blog.controller.admin;
+package blog.controller.user.personal;
 
 import blog.dto.ArticleDTO;
 import blog.dto.ArticleQueryDTO;
@@ -7,13 +7,8 @@ import blog.result.Result;
 import blog.service.ArticleService;
 import blog.vo.ArticleVO;
 import blog.vo.MomentVO;
-<<<<<<< HEAD
-//import com.github.pagehelper.PageHelper;
-//import com.github.pagehelper.PageInfo;
-=======
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
->>>>>>> d5a7cbf233b4e1842632f054b48bc235a6356241
 import io.swagger.annotations.ApiOperation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +23,8 @@ import java.util.stream.Collectors;
 /**
  * 文章管理控制器
  */
-@RestController("adminArticleController")
-@RequestMapping("/admin/articles")
+@RestController("PersonalArticleController")
+@RequestMapping("/user/personal/articles")
 @Slf4j
 @ApiOperation("文章管理页面")
 public class ArticleController {
