@@ -1,0 +1,73 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/eleven_blog?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:pzf52013149876}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      password: ${SPRING_DATA_REDIS_PASSWORD:}
+      database: ${SPRING_DATA_REDIS_DATABASE:1}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+  thymeleaf:
+    check-template-location: true
+    cache: false
+    mode: HTML
+    encoding: UTF-8
+    suffix: .html
+    servlet:
+      content-type: text/html
+    prefix: classpath:/templates/
+  sql:
+    init:
+      mode: never
+      continue-on-error: false
+
+server:
+  port: ${SERVER_PORT:8081}
+  address: 0.0.0.0
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: blog.pojo
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    blog.mapper: debug
+    blog.service: info
+    blog.controller: info
+
+file:
+  upload-dir: ${FILE_UPLOAD_DIR:upload}
+
+blog:
+  owner:
+    email: ${BLOG_OWNER_EMAIL:your-email@example.com}
+    avatar: ${BLOG_OWNER_AVATAR:your-avatar-url.png}
+    nickname: ${BLOG_OWNER_NICKNAME:博主}
+
+github:
+  oauth:
+    client-id: ${GITHUB_OAUTH_CLIENT_ID:Ov23lihgPPK0LWvK6UoY}
+    client-secret: ${GITHUB_OAUTH_CLIENT_SECRET:5520122d774eba2a14432698149c437fea88db29}
+    redirect-uri: ${GITHUB_OAUTH_REDIRECT_URI:http://localhost:3000/login}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+  health:
+    db:
+      enabled: true

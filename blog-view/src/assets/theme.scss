@@ -1,0 +1,24 @@
+:root {
+  --app-bg-color: #f9fbfa;
+  --app-page-bg:
+    radial-gradient(circle at top left, rgba(226, 239, 230, 0.42), rgba(226, 239, 230, 0) 34%),
+    linear-gradient(180deg, #f8faf7 0%, #f7f9fb 52%, #fcfcfd 100%);
+  --app-text-color: #303133;
+  --app-secondary-text-color: #555555;
+  --header-bg-color: rgba(255, 255, 255, 0.671);
+  --header-border-color: #dcdfe6;
+  --header-glass-bg: rgba(255, 255, 255, 0.56);
+  --header-glass-border: rgba(255, 255, 255, 0.66);
+  --header-glass-shadow:
+    0 14px 32px rgba(148, 163, 184, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  --card-bg-color: #ffffff;
+  --card-border-color: #e4e7ed;
+  --card-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  --pagination-active-color: #6da051;
+  --pagination-hover-color: #6da051;
+  --link-hover-color: #6da051;
+  --tag-bg-color: #ecf5ff;
+  --tag-text-color: #5f5f5f;
+  --tag-border-color: #d9ecff;
+}

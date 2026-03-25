@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blog.mapper.ArticleMapper">
+    <update id="update">
+        UPDATE article
+        <set>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="summary != null">
+                summary = #{summary},
+            </if>
+            <if test="content != null">
+                content = #{content},
+            </if>
+            <if test="coverImage != null">
+                cover_image = #{coverImage},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId},
+            </if>
+            <if test="tags != null">
+                tags = #{tags},
+            </if>
+            <if test="authorId != null">
+                author_id = #{authorId},
+            </if>
+            <if test="viewCount != null">
+                view_count = #{viewCount},
+            </if>
+            <if test="isComment != null">
+                is_comment = #{isComment},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="publishTime != null">
+                publish_time = #{publishTime},
+            </if>
+            update_time = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectByCategoryId" resultType="blog.vo.ArticleVO">
+        SELECT
+            a.id, a.author_id as authorId, a.title, a.summary, a.content, a.cover_image as coverImage,
+            a.category_id as categoryId, a.tags, a.view_count as viewCount,
+            a.is_comment as isComment, a.status, a.publish_time as publishTime,
+            a.create_time as createTime, a.update_time as updateTime, c.name as categoryName,
+            ua.nickname as authorNickname, ua.avatar as authorAvatar
+        FROM
+            article a
+
+        LEFT JOIN
+            category c ON a.category_id = c.id
+        LEFT JOIN
+            user_account ua ON a.author_id = ua.id
+        WHERE
+            a.category_id = #{categoryId}
+            AND a.status = 1
+        ORDER BY
+            COALESCE(a.publish_time, a.create_time) DESC
+    </select>
+
+    <select id="selectByTagId" resultType="blog.vo.ArticleVO">
+        SELECT
+            a.id, a.author_id as authorId, a.title, a.summary, a.content, a.cover_image as coverImage,
+            a.category_id as categoryId, a.tags, a.view_count as viewCount,
+            a.is_comment as isComment, a.status, a.publish_time as publishTime,
+            a.create_time as createTime, a.update_time as updateTime, c.name as categoryName,
+            ua.nickname as authorNickname, ua.avatar as authorAvatar
+        FROM
+            article a
+        LEFT JOIN
+            category c ON a.category_id = c.id
+        LEFT JOIN
+            user_account ua ON a.author_id = ua.id
+        WHERE
+            FIND_IN_SET(#{tagId}, a.tags)
+            AND a.status = 1
+        ORDER BY
+            COALESCE(a.publish_time, a.create_time) DESC
+    </select>
+
+
+    <select id="selectAll" resultType="blog.vo.ArticleVO">
+        SELECT
+            a.id, a.author_id as authorId, a.title, a.summary, a.cover_image as coverImage,
+            a.category_id as categoryId, a.tags, a.view_count as viewCount,
+            a.is_comment as isComment, a.status, a.publish_time as publishTime,
+            a.create_time as createTime, a.update_time as updateTime, c.name as categoryName,
+            ua.nickname as authorNickname, ua.avatar as authorAvatar
+
+        FROM
+            article a
+
+        LEFT JOIN
+            category c ON a.category_id = c.id
+        LEFT JOIN
+            user_account ua ON a.author_id = ua.id
+
+        ORDER BY
+
+            COALESCE(a.publish_time, a.create_time) DESC
+    </select>
+
+    <select id="getContributionData" resultType="java.util.Map">
+        SELECT
+            DATE_FORMAT(publish_time, '%Y-%m-%d') as date,
+            COUNT(*) as count
+        FROM
+            article
+        WHERE
+            create_time >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) -- 只查最近一年的
+        GROUP BY
+            date
+    </select>
+    <select id="getCategoryCount" resultType="java.util.Map">
+        SELECT
+        c.name AS name,
+        COUNT(a.id) AS value
+        FROM
+        article a
+        LEFT JOIN
+        category c ON a.category_id = c.id
+        GROUP BY
+        a.category_id
+
+
+
+    </select>
+
+</mapper>
