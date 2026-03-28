@@ -30,7 +30,16 @@ export function fetchArticleById(id) {
   })
 }
 
-export function createArticle(data) {
+export function fetchManagedArticles(params) {
+  return request({
+    baseURL: '',
+    url: '/admin/articles/list',
+    method: 'get',
+    params,
+  })
+}
+
+export function createManagedArticle(data) {
   return request({
     baseURL: '',
     url: '/admin/articles',
@@ -39,7 +48,7 @@ export function createArticle(data) {
   })
 }
 
-export function updateArticle(id, data) {
+export function updateManagedArticle(id, data) {
   return request({
     baseURL: '',
     url: `/admin/articles/${id}`,
@@ -48,7 +57,7 @@ export function updateArticle(id, data) {
   })
 }
 
-export function getArticleById(id) {
+export function fetchManagedArticleById(id) {
   return request({
     baseURL: '',
     url: `/admin/articles/${id}`,
@@ -56,3 +65,14 @@ export function getArticleById(id) {
   })
 }
 
+export function deleteManagedArticle(id) {
+  return request({
+    baseURL: '',
+    url: `/admin/articles/${id}`,
+    method: 'delete',
+  })
+}
+
+export const createArticle = createManagedArticle
+export const updateArticle = updateManagedArticle
+export const getArticleById = fetchManagedArticleById

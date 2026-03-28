@@ -57,7 +57,7 @@ import {
   deleteAdminComment,
   fetchAdminComments,
   updateAdminCommentStatus,
-} from '@/api/admin'
+} from '@/api/admin/comments'
 import ManagementSectionShell from '@/components/profile/management/ManagementSectionShell.vue'
 import {
   formatManagementTime,

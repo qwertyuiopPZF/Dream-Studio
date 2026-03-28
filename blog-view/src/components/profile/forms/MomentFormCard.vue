@@ -45,7 +45,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
-import { createAdminMoment } from '@/api/admin'
+import { createManagedMoment } from '@/api/moment'
 import { uploadImage } from '@/api/upload'
 import { useWorkspaceRouteBase } from '@/composables/useWorkspaceRouteBase'
 
@@ -119,7 +119,7 @@ const processImages = () => {
 const submitMoment = async (status) => {
   loading.value = true
   try {
-    await createAdminMoment({
+    await createManagedMoment({
       content: momentForm.value.content,
       image: processImages(),
       status,

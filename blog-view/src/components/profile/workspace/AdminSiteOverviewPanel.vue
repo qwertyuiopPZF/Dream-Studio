@@ -1,6 +1,6 @@
 <template>
-  <workspace-page-shell title="站点概览" description="管理员可以维护站点信息，并管理论坛页展示的公告。" :loading="loading" @refresh="loadOverview">
-    <template v-if="!isAdmin">
+  <workspace-page-shell title="站点设置" description="管理员可以维护站点信息，并管理论坛页展示的公告。" :loading="loading" @refresh="loadOverview">
+    <template v-if="!canManageSite">
       <workspace-permission-notice message="当前账号没有站点配置权限。" />
     </template>
     <template v-else>
@@ -45,8 +45,9 @@ import {
   fetchAdminAnnouncements,
   fetchAdminSiteInfo,
   updateAdminSiteInfo,
-} from '@/api/admin'
+} from '@/api/admin/site'
 import { useUserStore } from '@/store/user'
+import { WORKSPACE_CAPABILITIES } from '@/utils/workspaceCapabilities'
 import AnnouncementEditorDialog from '@/components/profile/workspace/AnnouncementEditorDialog.vue'
 import AnnouncementManagementCard from '@/components/profile/workspace/AnnouncementManagementCard.vue'
 import SiteInfoSettingsCard from '@/components/profile/workspace/SiteInfoSettingsCard.vue'
@@ -55,7 +56,7 @@ import WorkspacePageShell from '@/components/profile/workspace/WorkspacePageShel
 import WorkspacePermissionNotice from '@/components/profile/workspace/WorkspacePermissionNotice.vue'
 
 const userStore = useUserStore()
-const isAdmin = computed(() => userStore.isAdmin)
+const canManageSite = computed(() => userStore.hasCapability(WORKSPACE_CAPABILITIES.SITE_MANAGE))
 const loading = ref(false)
 const siteSaving = ref(false)
 const announcements = ref([])
@@ -73,7 +74,7 @@ const announcementDialog = reactive({
 })
 
 const loadSiteInfo = async () => {
-  if (!isAdmin.value) return
+  if (!canManageSite.value) return
 
   const response = await fetchAdminSiteInfo()
   siteForm.name = response?.name || ''
@@ -84,13 +85,13 @@ const loadSiteInfo = async () => {
 }
 
 const loadAnnouncements = async () => {
-  if (!isAdmin.value) return
+  if (!canManageSite.value) return
 
   announcements.value = (await fetchAdminAnnouncements()) || []
 }
 
 const loadOverview = async () => {
-  if (!isAdmin.value) return
+  if (!canManageSite.value) return
 
   loading.value = true
 

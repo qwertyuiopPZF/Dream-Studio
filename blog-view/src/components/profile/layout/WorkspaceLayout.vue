@@ -49,7 +49,9 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user'
+import { WORKSPACE_CAPABILITIES } from '@/utils/workspaceCapabilities'
 import {
+  Bell,
   ChatSquare,
   Comment,
   Document,
@@ -57,6 +59,7 @@ import {
   EditPen,
   HomeFilled,
   House,
+  Odometer,
   Setting,
   UserFilled,
   WalletFilled,
@@ -78,18 +81,18 @@ const WORKSPACE_CONFIGS = {
   user: {
     brandKicker: 'Dream Studio',
     breadcrumbLabel: '个人中心',
-    defaultTitle: '创作空间',
-    brandDescription: '管理自己的文章、动态和帖子内容。',
+    defaultTitle: '个人总览',
+    brandDescription: '查看个人数据、管理创作内容并跟进互动反馈。',
     pageKicker: 'Personal Workspace',
     tagText: '个人中心',
     tagType: 'warning',
-    homeDescription: '把个人创作和互动内容集中到一个独立空间里维护。',
+    homeDescription: '把个人创作、通知和互动反馈集中到一个独立空间里维护。',
   },
   admin: {
     brandKicker: 'Dream Studio',
     breadcrumbLabel: '后台管理',
-    defaultTitle: '管理控制台',
-    brandDescription: '集中维护站点内容、论坛和基础配置。',
+    defaultTitle: '管理概览',
+    brandDescription: '集中查看站点状态，并维护内容、社区和基础配置。',
     pageKicker: 'Admin Console',
     tagText: '管理员模式',
     tagType: 'success',
@@ -100,11 +103,36 @@ const WORKSPACE_CONFIGS = {
 const WORKSPACE_MENUS = {
   user: [
     {
+      path: 'overview',
+      label: '总览',
+      title: '个人总览',
+      description: '查看个人资料、通知提醒、创作数据和最近互动。',
+      icon: Odometer,
+      requiredCapability: WORKSPACE_CAPABILITIES.PROFILE_OVERVIEW_VIEW,
+    },
+    {
+      path: 'notifications',
+      label: '通知中心',
+      title: '通知中心',
+      description: '查看站内通知，并按需标记为已读。',
+      icon: Bell,
+      requiredCapability: WORKSPACE_CAPABILITIES.PROFILE_NOTIFICATIONS_VIEW,
+    },
+    {
+      path: 'account',
+      label: '账号设置',
+      title: '账号设置',
+      description: '更新头像、设置站内密码并确认当前账号资料。',
+      icon: Setting,
+      requiredCapability: WORKSPACE_CAPABILITIES.PROFILE_ACCOUNT_EDIT,
+    },
+    {
       path: 'articlemgmt',
       label: '我的文章',
       title: '我的文章',
       description: '查看、筛选和维护你发布过的文章。',
       icon: HomeFilled,
+      requiredCapability: WORKSPACE_CAPABILITIES.ARTICLE_MANAGE_OWN,
     },
     {
       path: 'momentsmgmt',
@@ -112,6 +140,7 @@ const WORKSPACE_MENUS = {
       title: '我的动态',
       description: '集中查看和删除自己发布的动态内容。',
       icon: House,
+      requiredCapability: WORKSPACE_CAPABILITIES.MOMENT_MANAGE_OWN,
     },
     {
       path: 'writearticle',
@@ -119,6 +148,7 @@ const WORKSPACE_MENUS = {
       title: '写文章',
       description: '继续写作、保存草稿或直接发布文章。',
       icon: WalletFilled,
+      requiredCapability: WORKSPACE_CAPABILITIES.ARTICLE_WRITE,
     },
     {
       path: 'writemoment',
@@ -126,6 +156,7 @@ const WORKSPACE_MENUS = {
       title: '发布动态',
       description: '记录近况并把图文动态发布到时间轴。',
       icon: ChatSquare,
+      requiredCapability: WORKSPACE_CAPABILITIES.MOMENT_WRITE,
     },
     {
       path: 'forum-publish',
@@ -133,6 +164,7 @@ const WORKSPACE_MENUS = {
       title: '发布帖子',
       description: '开始新的讨论，把内容同步到论坛页面。',
       icon: EditPen,
+      requiredCapability: WORKSPACE_CAPABILITIES.FORUM_POST_WRITE,
     },
     {
       path: 'forum-manage',
@@ -140,15 +172,25 @@ const WORKSPACE_MENUS = {
       title: '我的帖子',
       description: '查看、整理和删除自己发布的论坛帖子。',
       icon: Document,
+      requiredCapability: WORKSPACE_CAPABILITIES.FORUM_POST_MANAGE_OWN,
     },
   ],
   admin: [
+    {
+      path: 'overview',
+      label: '总览',
+      title: '管理概览',
+      description: '总览整站内容状态、待处理事项和运营趋势。',
+      icon: Odometer,
+      requiredCapability: WORKSPACE_CAPABILITIES.DASHBOARD_VIEW,
+    },
     {
       path: 'articlemgmt',
       label: '文章管理',
       title: '文章管理',
       description: '统一维护站点文章内容、状态和发布节奏。',
       icon: HomeFilled,
+      requiredCapability: WORKSPACE_CAPABILITIES.ARTICLE_MANAGE_ALL,
     },
     {
       path: 'commentmgmt',
@@ -156,6 +198,15 @@ const WORKSPACE_MENUS = {
       title: '评论管理',
       description: '审核评论内容并快速定位到对应页面。',
       icon: Comment,
+      requiredCapability: WORKSPACE_CAPABILITIES.COMMENT_MODERATE,
+    },
+    {
+      path: 'reportmgmt',
+      label: '举报审核',
+      title: '举报审核',
+      description: '处理论坛举报，并记录审核结论与备注。',
+      icon: Bell,
+      requiredCapability: WORKSPACE_CAPABILITIES.REPORT_REVIEW,
     },
     {
       path: 'momentsmgmt',
@@ -163,6 +214,7 @@ const WORKSPACE_MENUS = {
       title: '动态管理',
       description: '查看、清理和维护站点动态内容。',
       icon: House,
+      requiredCapability: WORKSPACE_CAPABILITIES.MOMENT_MANAGE_ALL,
     },
     {
       path: 'writearticle',
@@ -170,6 +222,7 @@ const WORKSPACE_MENUS = {
       title: '写文章',
       description: '新建文章、保存草稿或继续编辑既有内容。',
       icon: WalletFilled,
+      requiredCapability: WORKSPACE_CAPABILITIES.ARTICLE_WRITE,
     },
     {
       path: 'writemoment',
@@ -177,6 +230,7 @@ const WORKSPACE_MENUS = {
       title: '发布动态',
       description: '以管理员身份快速发布新的站点动态。',
       icon: ChatSquare,
+      requiredCapability: WORKSPACE_CAPABILITIES.MOMENT_WRITE,
     },
     {
       path: 'categorisemgmt',
@@ -184,6 +238,7 @@ const WORKSPACE_MENUS = {
       title: '分类管理',
       description: '集中维护文章分类并保持内容结构清晰。',
       icon: UserFilled,
+      requiredCapability: WORKSPACE_CAPABILITIES.TAXONOMY_MANAGE,
     },
     {
       path: 'tagsmgmt',
@@ -191,6 +246,7 @@ const WORKSPACE_MENUS = {
       title: '标签管理',
       description: '统一整理文章标签和站点内容索引。',
       icon: Discount,
+      requiredCapability: WORKSPACE_CAPABILITIES.TAXONOMY_MANAGE,
     },
     {
       path: 'forum-publish',
@@ -198,6 +254,7 @@ const WORKSPACE_MENUS = {
       title: '发布帖子',
       description: '从后台直接发起论坛讨论并发布内容。',
       icon: EditPen,
+      requiredCapability: WORKSPACE_CAPABILITIES.FORUM_POST_WRITE,
     },
     {
       path: 'forum-manage',
@@ -205,13 +262,15 @@ const WORKSPACE_MENUS = {
       title: '帖子管理',
       description: '管理论坛帖子状态、置顶和加精展示。',
       icon: Document,
+      requiredCapability: WORKSPACE_CAPABILITIES.FORUM_POST_MODERATE,
     },
     {
       path: 'site',
-      label: '站点概览',
-      title: '站点概览',
-      description: '维护站点信息、公告和首页展示内容。',
+      label: '站点设置',
+      title: '站点设置',
+      description: '维护站点信息、公告和论坛页展示内容。',
       icon: Setting,
+      requiredCapability: WORKSPACE_CAPABILITIES.SITE_MANAGE,
     },
     {
       path: 'usermgmt',
@@ -219,6 +278,7 @@ const WORKSPACE_MENUS = {
       title: '用户管理',
       description: '查看账号状态，并设置管理员或删除用户。',
       icon: UserFilled,
+      requiredCapability: WORKSPACE_CAPABILITIES.USER_MANAGE,
     },
   ],
 }
@@ -230,7 +290,7 @@ const menuItems = computed(() =>
   WORKSPACE_MENUS[props.mode].map((item) => ({
     ...item,
     index: `${basePath.value}/${item.path}`,
-  })),
+  })).filter((item) => userStore.hasCapability(item.requiredCapability)),
 )
 const userInitial = computed(() => profile.value.nickname?.slice(0, 1)?.toUpperCase() || 'D')
 

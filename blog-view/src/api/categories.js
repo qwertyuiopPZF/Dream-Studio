@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import request from '@/utils/request'
 
 /**
  * 获取分类列表
@@ -7,7 +7,7 @@ export function fetchCategories() {
   return request({
     url: '/categories',
     method: 'get',
-  });
+  })
 }
 
 
@@ -21,7 +21,7 @@ export function fetchArticlesByCategoryId(id, params) {
     url: `/categories/${id}/articles`,
     method: 'get',
     params,
-  });
+  })
 }
 
-
+export const getAllCategories = fetchCategories

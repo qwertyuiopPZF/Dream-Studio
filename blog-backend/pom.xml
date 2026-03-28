@@ -36,6 +36,8 @@
         <httpclient.version>4.5.12</httpclient.version>
         <fastjson.version>1.2.76</fastjson.version>
         <jsqlparser.version>4.5</jsqlparser.version>
+        <aws.sdk.version>2.32.18</aws.sdk.version>
+        <springdoc.verson>2.5.0</springdoc.verson>
     </properties>
 
     <dependencyManagement>
@@ -116,7 +118,23 @@
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
             </dependency>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>s3</artifactId>
+                <version>${aws.sdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>url-connection-client</artifactId>
+                <version>${aws.sdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.verson}</version>
+            </dependency>
         </dependencies>
+
     </dependencyManagement>
 
     <build>

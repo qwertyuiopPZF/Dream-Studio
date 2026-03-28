@@ -1,6 +1,6 @@
 <template>
   <workspace-page-shell title="标签管理" description="管理员可以集中维护站点标签。" :loading="loading" @refresh="loadTags">
-    <template v-if="!isAdmin">
+    <template v-if="!canManageTaxonomy">
       <workspace-permission-notice message="当前账号没有标签管理权限。" />
     </template>
     <template v-else>
@@ -53,12 +53,13 @@ import {
 } from '@/api/admin'
 import { useUserStore } from '@/store/user'
 import { formatManagementTime } from '@/utils/profileManagement'
+import { WORKSPACE_CAPABILITIES } from '@/utils/workspaceCapabilities'
 import NameEditorDialog from '@/components/profile/workspace/NameEditorDialog.vue'
 import WorkspacePageShell from '@/components/profile/workspace/WorkspacePageShell.vue'
 import WorkspacePermissionNotice from '@/components/profile/workspace/WorkspacePermissionNotice.vue'
 
 const userStore = useUserStore()
-const isAdmin = computed(() => userStore.isAdmin)
+const canManageTaxonomy = computed(() => userStore.hasCapability(WORKSPACE_CAPABILITIES.TAXONOMY_MANAGE))
 const loading = ref(false)
 const tags = ref([])
 const dialog = reactive({
@@ -68,7 +69,7 @@ const dialog = reactive({
 })
 
 const loadTags = async () => {
-  if (!isAdmin.value) return
+  if (!canManageTaxonomy.value) return
 
   loading.value = true
 
