@@ -14,10 +14,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="Dream-Studio" options="" />
-      <module name="Eleven-blog" options="" />
       <module name="blog-common" options="-parameters" />
-      <module name="blog-pojo" options="-parameters" />
       <module name="blog-server" options="-parameters" />
     </option>
   </component>

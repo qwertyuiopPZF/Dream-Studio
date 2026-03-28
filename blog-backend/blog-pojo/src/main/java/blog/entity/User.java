@@ -29,6 +29,10 @@ public class User {
 
     private String signature;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     private String role;  // user/admin
 
     private Integer status;  // 0-禁用 1-正常
@@ -40,4 +44,8 @@ public class User {
     private LocalDateTime updateTime;
 
     private LocalDateTime lastLoginTime;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8

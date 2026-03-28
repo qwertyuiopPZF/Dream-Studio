@@ -183,6 +183,15 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public ArticleVO findArticleById(Long id)
+    {
+        return articleMapper.selectById(id);
+    }
+
+    @Override
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     public ArticleVO getArticleById(Long id,String userIp)
     {
         log.info("查询文章详情，ID：{}", id);

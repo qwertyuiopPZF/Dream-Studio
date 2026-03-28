@@ -2,7 +2,11 @@ spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/eleven_blog?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
     username: ${SPRING_DATASOURCE_USERNAME:root}
+<<<<<<< HEAD
     password: ${SPRING_DATASOURCE_PASSWORD:pzf52013149876}
+=======
+    password: ${SPRING_DATASOURCE_PASSWORD:123456}
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
@@ -29,7 +33,11 @@ spring:
       continue-on-error: false
 
 server:
+<<<<<<< HEAD
   port: ${SERVER_PORT:8081}
+=======
+  port: ${SERVER_PORT:8080}
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
   address: 0.0.0.0
 
 mybatis:

@@ -86,6 +86,7 @@ public class AuthServiceImpl implements AuthService
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
+<<<<<<< HEAD
         // 3. 获取用户ID
         UserProfileVO profile = userAccountService.getProfileByUsername(username);
         Long userId = profile != null ? profile.getId() : null;
@@ -96,6 +97,15 @@ public class AuthServiceImpl implements AuthService
 
         // 5. 返回结果
         return new LoginResponse(accessToken, refreshToken, username, false);
+=======
+        // 3. 生成双 Token
+        String accessToken = jwtUtil.createAccessToken(username, roles);
+        String refreshToken = jwtUtil.createRefreshToken(username);
+
+        // 4. 返回结果
+        String role = roles.stream().anyMatch(item -> "ROLE_ADMIN".equalsIgnoreCase(item)) ? "ADMIN" : "USER";
+        return new LoginResponse(accessToken, refreshToken, username, false, role);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     }
 
     @Override
@@ -143,7 +153,11 @@ public class AuthServiceImpl implements AuthService
         }
 
         var userAccount = userAccountService.saveOrUpdateGithubUser(githubUser);
+<<<<<<< HEAD
         return buildAuthenticatedResponse(userAccount.getId(), userAccount.getUsername(), userAccount.getRole(), false);
+=======
+        return buildAuthenticatedResponse(userAccount.getUsername(), userAccount.getRole(), false);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     }
 
     @Override
@@ -166,7 +180,11 @@ public class AuthServiceImpl implements AuthService
         );
         clearGithubRegistrationSession(request.getRegistrationToken());
 
+<<<<<<< HEAD
         return buildAuthenticatedResponse(userAccount.getId(), userAccount.getUsername(), userAccount.getRole(), false);
+=======
+        return buildAuthenticatedResponse(userAccount.getUsername(), userAccount.getRole(), false);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     }
 
     private LoginResponse buildPendingGithubRegistration(blog.entity.UserAccount existingUser,
@@ -200,12 +218,22 @@ public class AuthServiceImpl implements AuthService
         );
     }
 
+<<<<<<< HEAD
     private LoginResponse buildAuthenticatedResponse(Long userId, String username, String role, boolean needsPasswordSetup)
     {
         List<String> roles = List.of("ROLE_" + Objects.requireNonNullElse(role, "USER").toUpperCase());
         String accessToken = jwtUtil.createAccessToken(username, userId, roles);
         String refreshToken = jwtUtil.createRefreshToken(username);
         return new LoginResponse(accessToken, refreshToken, username, needsPasswordSetup);
+=======
+    private LoginResponse buildAuthenticatedResponse(String username, String role, boolean needsPasswordSetup)
+    {
+        String resolvedRole = StringUtils.hasText(role) ? role.toUpperCase() : "USER";
+        List<String> roles = List.of("ROLE_" + resolvedRole);
+        String accessToken = jwtUtil.createAccessToken(username, roles);
+        String refreshToken = jwtUtil.createRefreshToken(username);
+        return new LoginResponse(accessToken, refreshToken, username, needsPasswordSetup, resolvedRole);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     }
 
     private String generateSuggestedUsername(String githubLogin, Long githubId)
@@ -256,10 +284,17 @@ public class AuthServiceImpl implements AuthService
 
         String role = StringUtils.hasText(profile.getRole()) ? profile.getRole().toUpperCase() : "USER";
         List<String> roles = List.of("ROLE_" + role);
+<<<<<<< HEAD
         String accessToken = jwtUtil.createAccessToken(username, profile.getId(), roles);
         String refreshToken = jwtUtil.createRefreshToken(username);
         boolean needsPasswordSetup = !Boolean.TRUE.equals(profile.getPasswordInitialized());
         return new LoginResponse(accessToken, refreshToken, username, needsPasswordSetup);
+=======
+        String accessToken = jwtUtil.createAccessToken(username, roles);
+        String refreshToken = jwtUtil.createRefreshToken(username);
+        boolean needsPasswordSetup = !Boolean.TRUE.equals(profile.getPasswordInitialized());
+        return new LoginResponse(accessToken, refreshToken, username, needsPasswordSetup, role);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     }
 
     private void ensureGithubConfigured()

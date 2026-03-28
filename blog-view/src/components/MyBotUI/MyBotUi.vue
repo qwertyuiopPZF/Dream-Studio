@@ -46,19 +46,31 @@ import Typed from 'typed.js'
 const script = {
   // 第一句
   root: {
+<<<<<<< HEAD
     text: '你好，这里是 Eleven-Mouse の Blog 👋 ^500',
+=======
+    text: '你好，这里是 Dream-studio 👋 ^500',
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     next: 'intro_1',
     options: [],
   },
 
   intro_1: {
+<<<<<<< HEAD
     text: '我是 十一，你也可以叫我鼠鼠 😘 ^500', // ^500 稍微停顿一下
+=======
+    text: '梦工厂的博客论坛 😘 ^500', // ^500 稍微停顿一下
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     next: 'intro_2',
     options: [],
   },
 
   intro_2: {
+<<<<<<< HEAD
     text: '是 [ Eleven ] 的开发者 ^500',
+=======
+    text: '本博客论坛致力于为同学们提供纯净、积极的交流空间，鼓励大家记录思考、分享成果、互帮互助、共同成长。💪^500',
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     // 这里给选项，等待用户点击
     options: [{ label: '然后呢？😄', next: 'story' }],
   },
@@ -69,21 +81,35 @@ const script = {
     options: [],
   },
   story_2: {
+<<<<<<< HEAD
     text: '是一个正在努力学习的全栈开发💪 ^500',
     next: 'story_3',
     options: [],
   },
   story_3: {
     text: '略懂前端和后端，可以自己写全栈项目...偶尔也刷刷算法(算法菜鼠一个🐭) ^500',
+=======
+    text: '无论是学习感悟、课程笔记、原创文章，还是遇到的困惑与难题，都可以在这里分享与交流。 ^500',
+    next: 'story_3',
+    options: [{ label: '关于本项目 🤔', next: 'story_3' }],
+  },
+  story_3: {
+    text: '如大家对此项目感兴趣，右上角传送门 ^500',
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     next: 'story_4',
     options: [],
   },
   story_4: {
+<<<<<<< HEAD
     text: '最擅长...编程??调教AI?o(*ï¿£ï¸¶ï¿£*)o ^500',
+=======
+    text: '欢迎大家拉取源码 ^500',
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     next: 'story_5',
     options: [],
   },
   story_5: {
+<<<<<<< HEAD
     text: '喜欢编程，热爱编程，目前正在计算机领域探索 ^500',
     options: [{ label: '你有什么爱好呢？🤔', next: 'story_6' }],
   },
@@ -93,10 +119,25 @@ const script = {
   },
   story_7: {
     text: '本博客是学习中的产物，如有不足还请见谅，如有建议，欢迎提出！😀博主会加油努力的！ ^500',
+=======
+    text: '愿每一位同学都能在这里收获知识、收获成长，一起进步，一起优秀 ^500',
+    next: 'story_6',
+    options: [],
+  },
+
+  story_6: {
+    text: '本项目是学习中的产物，如有不足还请见谅，如有建议，欢迎提出！😀我们会加油努力的！ ^500',
+    next: 'story_7',
+    options: [],
+  },
+  story_7: {
+    text: '给 Dream-studio 评个星吧 ^500',
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     next: 'story_8',
     options: [],
   },
   story_8: {
+<<<<<<< HEAD
     text: '给 Eleven-blog 评个星吧 ^500',
     next: 'story_9',
     options: [],
@@ -107,6 +148,13 @@ const script = {
     next: 'story_10',
   },
   story_10: {
+=======
+    // 标记这是一条特殊消息：评分
+    type: 'rating',
+    next: 'story_9',
+  },
+  story_9: {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     text: '收到！谢谢你的鼓励 😘 ^500',
     options: [{ label: '再见' }],
   },

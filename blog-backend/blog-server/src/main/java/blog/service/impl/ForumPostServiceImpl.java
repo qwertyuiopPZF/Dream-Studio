@@ -1,5 +1,6 @@
 package blog.service.impl;
 
+<<<<<<< HEAD
 import blog.config.BusinessException;
 import blog.dto.ForumPostAdminUpdateDTO;
 import blog.dto.ForumPostDTO;
@@ -15,35 +16,68 @@ import blog.vo.PostDetailVO;
 import blog.vo.PostVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+=======
+import blog.dto.ForumPostAdminUpdateDTO;
+import blog.dto.ForumPostDTO;
+import blog.entity.ForumPost;
+import blog.mapper.ForumPostMapper;
+import blog.service.ForumPostService;
+import blog.service.UserAccountService;
+import blog.vo.ForumPostVO;
+import lombok.extern.slf4j.Slf4j;
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+<<<<<<< HEAD
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+=======
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+<<<<<<< HEAD
 public class ForumPostServiceImpl implements ForumPostService {
 
+=======
+public class ForumPostServiceImpl implements ForumPostService
+{
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     private static final int SUMMARY_MAX_LENGTH = 160;
 
     @Autowired
     private ForumPostMapper forumPostMapper;
 
+<<<<<<< HEAD
     // ========== 原有方法 ==========
 
     @Override
     public Map<String, Object> listPosts(String sort, int page, int size) {
+=======
+    @Override
+    public Map<String, Object> listPosts(String sort, int page, int size)
+    {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         int safePage = Math.max(page, 1);
         int safeSize = Math.max(size, 1);
         int offset = (safePage - 1) * safeSize;
 
+<<<<<<< HEAD
         List<ForumPostVO> posts = forumPostMapper.selectPage(normalizeSort(sort), offset, safeSize, null, null, false);
         Long total = forumPostMapper.countPage(null, null, false);
+=======
+        List<ForumPostVO> posts = forumPostMapper.selectPage(normalizeSort(sort), offset, safeSize, null, null, null, false);
+        Long total = forumPostMapper.countPage(null, null, null, false);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 
         Map<String, Object> result = new HashMap<>();
         result.put("data", posts);
@@ -54,18 +88,39 @@ public class ForumPostServiceImpl implements ForumPostService {
 
     @Override
     @Transactional
+<<<<<<< HEAD
     public ForumPostVO getPostById(Long id) {
+=======
+    public ForumPostVO getPostById(Long id)
+    {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         ForumPostVO forumPost = forumPostMapper.selectById(id);
         if (forumPost == null) {
             return null;
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         forumPostMapper.incrementViewCount(id);
         return forumPostMapper.selectById(id);
     }
 
     @Override
+<<<<<<< HEAD
     @Transactional
     public ForumPostVO createPost(ForumPostDTO forumPostDTO) {
+=======
+    public ForumPostVO findPostById(Long id)
+    {
+        return forumPostMapper.selectById(id);
+    }
+
+    @Override
+    @Transactional
+    public ForumPostVO createPost(ForumPostDTO forumPostDTO)
+    {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         validateForumPost(forumPostDTO);
 
         LocalDateTime now = LocalDateTime.now();
@@ -90,6 +145,7 @@ public class ForumPostServiceImpl implements ForumPostService {
     }
 
     @Override
+<<<<<<< HEAD
     public Map<String, List<ForumPostVO>> getSidebarData(Long currentPostId, int limit) {
         int safeLimit = Math.max(limit, 1);
 
@@ -99,6 +155,18 @@ public class ForumPostServiceImpl implements ForumPostService {
         if (recommendations.size() < safeLimit) {
             List<Long> existingIds = recommendations.stream().map(ForumPostVO::getId).collect(Collectors.toList());
             List<ForumPostVO> hotPosts = forumPostMapper.selectPage("hot", 0, safeLimit * 2, null, currentPostId, false);
+=======
+    public Map<String, List<ForumPostVO>> getSidebarData(Long currentPostId, int limit)
+    {
+        int safeLimit = Math.max(limit, 1);
+
+        List<ForumPostVO> latest = forumPostMapper.selectPage("latest", 0, safeLimit, null, null, currentPostId, false);
+        List<ForumPostVO> recommendations = forumPostMapper.selectPage("featured", 0, safeLimit, null, null, currentPostId, true);
+
+        if (recommendations.size() < safeLimit) {
+            List<Long> existingIds = recommendations.stream().map(ForumPostVO::getId).collect(Collectors.toList());
+            List<ForumPostVO> hotPosts = forumPostMapper.selectPage("hot", 0, safeLimit * 2, null, null, currentPostId, false);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
             for (ForumPostVO hotPost : hotPosts) {
                 if (recommendations.size() >= safeLimit) {
                     break;
@@ -117,13 +185,23 @@ public class ForumPostServiceImpl implements ForumPostService {
     }
 
     @Override
+<<<<<<< HEAD
     public Map<String, Object> listAdminPosts(int page, int size, String keyword) {
+=======
+    public Map<String, Object> listAdminPosts(int page, int size, String keyword, Long authorId)
+    {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         int safePage = Math.max(page, 1);
         int safeSize = Math.max(size, 1);
         int offset = (safePage - 1) * safeSize;
 
+<<<<<<< HEAD
         List<ForumPostVO> posts = forumPostMapper.selectPage("latest", offset, safeSize, trimToNull(keyword), null, false);
         Long total = forumPostMapper.countPage(trimToNull(keyword), null, false);
+=======
+        List<ForumPostVO> posts = forumPostMapper.selectPage("latest", offset, safeSize, trimToNull(keyword), authorId, null, false);
+        Long total = forumPostMapper.countPage(trimToNull(keyword), authorId, null, false);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 
         Map<String, Object> result = new HashMap<>();
         result.put("data", posts);
@@ -133,7 +211,12 @@ public class ForumPostServiceImpl implements ForumPostService {
 
     @Override
     @Transactional
+<<<<<<< HEAD
     public void updateAdminPostMeta(Long id, ForumPostAdminUpdateDTO updateDTO) {
+=======
+    public void updateAdminPostMeta(Long id, ForumPostAdminUpdateDTO updateDTO)
+    {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         ForumPostVO existingPost = forumPostMapper.selectById(id);
         if (existingPost == null) {
             throw new IllegalArgumentException("帖子不存在");
@@ -148,7 +231,12 @@ public class ForumPostServiceImpl implements ForumPostService {
 
     @Override
     @Transactional
+<<<<<<< HEAD
     public void deletePost(Long id) {
+=======
+    public void deletePost(Long id)
+    {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         ForumPostVO existingPost = forumPostMapper.selectById(id);
         if (existingPost == null) {
             throw new IllegalArgumentException("帖子不存在");
@@ -157,7 +245,12 @@ public class ForumPostServiceImpl implements ForumPostService {
     }
 
     @Override
+<<<<<<< HEAD
     public void touchLastActivityByPage(String page) {
+=======
+    public void touchLastActivityByPage(String page)
+    {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         Long postId = parseForumPostId(page);
         if (postId == null) {
             return;
@@ -166,6 +259,7 @@ public class ForumPostServiceImpl implements ForumPostService {
     }
 
     @Override
+<<<<<<< HEAD
     public Long countTotal() {
         return forumPostMapper.countAll();
     }
@@ -418,6 +512,19 @@ public class ForumPostServiceImpl implements ForumPostService {
         if (!StringUtils.hasText(sort)) {
             return "latest";
         }
+=======
+    public Long countTotal()
+    {
+        return forumPostMapper.countAll();
+    }
+
+    private String normalizeSort(String sort)
+    {
+        if (!StringUtils.hasText(sort)) {
+            return "latest";
+        }
+
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         String normalizedSort = sort.trim().toLowerCase();
         if ("hot".equals(normalizedSort) || "featured".equals(normalizedSort)) {
             return normalizedSort;
@@ -425,7 +532,12 @@ public class ForumPostServiceImpl implements ForumPostService {
         return "latest";
     }
 
+<<<<<<< HEAD
     private void validateForumPost(ForumPostDTO forumPostDTO) {
+=======
+    private void validateForumPost(ForumPostDTO forumPostDTO)
+    {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         if (forumPostDTO == null) {
             throw new IllegalArgumentException("帖子内容不能为空");
         }
@@ -453,7 +565,12 @@ public class ForumPostServiceImpl implements ForumPostService {
         }
     }
 
+<<<<<<< HEAD
     private String buildSummary(ForumPostDTO forumPostDTO) {
+=======
+    private String buildSummary(ForumPostDTO forumPostDTO)
+    {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         if (StringUtils.hasText(forumPostDTO.getSummary())) {
             return forumPostDTO.getSummary().trim();
         }
@@ -478,14 +595,24 @@ public class ForumPostServiceImpl implements ForumPostService {
         return plainText.substring(0, SUMMARY_MAX_LENGTH) + "...";
     }
 
+<<<<<<< HEAD
     private String trimToNull(String value) {
+=======
+    private String trimToNull(String value)
+    {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         if (!StringUtils.hasText(value)) {
             return null;
         }
         return value.trim();
     }
 
+<<<<<<< HEAD
     private Map<String, Object> buildPagination(int page, int size, Long total) {
+=======
+    private Map<String, Object> buildPagination(int page, int size, Long total)
+    {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         long safeTotal = total == null ? 0L : total;
         Map<String, Object> pagination = new HashMap<>();
         pagination.put("currentPage", page);
@@ -495,7 +622,12 @@ public class ForumPostServiceImpl implements ForumPostService {
         return pagination;
     }
 
+<<<<<<< HEAD
     private Map<String, Object> buildPublicStats(Long total) {
+=======
+    private Map<String, Object> buildPublicStats(Long total)
+    {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         Map<String, Object> stats = new HashMap<>();
         stats.put("total", total == null ? 0L : total);
         stats.put("featuredCount", forumPostMapper.countFeatured());
@@ -503,7 +635,12 @@ public class ForumPostServiceImpl implements ForumPostService {
         return stats;
     }
 
+<<<<<<< HEAD
     private Long parseForumPostId(String page) {
+=======
+    private Long parseForumPostId(String page)
+    {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         if (!StringUtils.hasText(page) || !page.startsWith("forum-post-")) {
             return null;
         }

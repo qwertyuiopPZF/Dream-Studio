@@ -39,6 +39,7 @@ public class JwtUtil {
         return buildToken(username, claims, resolveAccessTokenExpiration());
     }
 
+<<<<<<< HEAD
     public String createAccessToken(String username, Long userId, List<String> roles) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", roles == null ? Collections.emptyList() : roles);
@@ -46,6 +47,12 @@ public class JwtUtil {
         if (userId != null) {
             claims.put("userId", userId);
         }
+=======
+    public String createAccessToken(String username, List<String> roles) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", roles == null ? Collections.emptyList() : roles);
+        claims.put(TOKEN_TYPE_CLAIM, ACCESS_TOKEN_TYPE);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         return buildToken(username, claims, resolveAccessTokenExpiration());
     }
 

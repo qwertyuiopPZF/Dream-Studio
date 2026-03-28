@@ -37,7 +37,11 @@ services:
     container_name: blog-backend
     restart: always
     ports:
+<<<<<<< HEAD
       - "8081:8081"
+=======
+      - "8080:8080"
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     depends_on:
       - mysql_db
       - redis
@@ -56,22 +60,34 @@ services:
 
       # 文件上传路径
       - FILE_UPLOAD_DIR=/app/uploads
+<<<<<<< HEAD
     networks:
       - blog-net
 
   # --- 4. 前端 (博客前台) ---
+=======
+      - SERVER_PORT=8080
+    networks:
+      - blog-net
+
+  # --- 4. 前端 (博客前台 + 管理端) ---
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
   blog-view:
     build: ./blog-view
     container_name: blog-view
     restart: always
     ports:
+<<<<<<< HEAD
 
+=======
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
       - "3000:3000"
     depends_on:
       - blog-backend
     networks:
       - blog-net
 
+<<<<<<< HEAD
   # --- 5. 前端 (后台管理) ---
   blog-cms:
     build: ./blog-cms
@@ -85,6 +101,8 @@ services:
     networks:
       - blog-net
 
+=======
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 volumes:
   db_data:
   redis_data:

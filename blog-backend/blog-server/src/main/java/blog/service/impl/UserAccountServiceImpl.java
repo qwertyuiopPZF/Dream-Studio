@@ -5,13 +5,25 @@ import blog.dto.Login.GithubRegistrationSession;
 import blog.entity.UserAccount;
 import blog.mapper.UserAccountMapper;
 import blog.service.UserAccountService;
+<<<<<<< HEAD
+=======
+import blog.vo.AdminUserVO;
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 import blog.vo.UserProfileVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+<<<<<<< HEAD
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+=======
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import java.time.LocalDateTime;
+import java.util.List;
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 
 @Service
 public class UserAccountServiceImpl implements UserAccountService
@@ -156,7 +168,11 @@ public class UserAccountServiceImpl implements UserAccountService
     public UserProfileVO getProfileByUsername(String username)
     {
         UserAccount userAccount = findByUsername(username);
+<<<<<<< HEAD
         if (userAccount != null) {
+=======
+        if (userAccount != null && !Boolean.FALSE.equals(userAccount.getStatus())) {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
             return new UserProfileVO(
                     userAccount.getId(),
                     userAccount.getUsername(),
@@ -241,6 +257,85 @@ public class UserAccountServiceImpl implements UserAccountService
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public List<AdminUserVO> listActiveUsers()
+    {
+        return userAccountMapper.selectActiveUsers().stream()
+                .map(this::toAdminUserVO)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public AdminUserVO updateUserAdminRole(Long userId, Boolean admin, String operatorUsername)
+    {
+        if (userId == null) {
+            throw new IllegalArgumentException("用户ID不能为空");
+        }
+
+        UserAccount operator = requireActiveUser(operatorUsername);
+        if (!isAdmin(operator)) {
+            throw new IllegalArgumentException("当前用户没有管理员权限");
+        }
+
+        UserAccount targetUser = requireActiveUser(userId);
+        if (operator.getId() != null && operator.getId().equals(targetUser.getId())) {
+            throw new IllegalArgumentException("不能修改自己的管理员状态");
+        }
+
+        boolean makeAdmin = Boolean.TRUE.equals(admin);
+        if (!makeAdmin && isAdmin(targetUser) && safeAdminCount() <= 1) {
+            throw new IllegalArgumentException("至少需要保留一名管理员");
+        }
+
+        targetUser.setRole(makeAdmin ? "ADMIN" : "USER");
+        targetUser.setUpdateTime(LocalDateTime.now());
+        userAccountMapper.updateById(targetUser);
+        return toAdminUserVO(targetUser);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long userId, String operatorUsername)
+    {
+        if (userId == null) {
+            throw new IllegalArgumentException("用户ID不能为空");
+        }
+
+        UserAccount operator = requireActiveUser(operatorUsername);
+        if (!isAdmin(operator)) {
+            throw new IllegalArgumentException("当前用户没有管理员权限");
+        }
+
+        UserAccount targetUser = requireActiveUser(userId);
+        if (operator.getId() != null && operator.getId().equals(targetUser.getId())) {
+            throw new IllegalArgumentException("不能删除当前登录账号");
+        }
+
+        if (isAdmin(targetUser) && safeAdminCount() <= 1) {
+            throw new IllegalArgumentException("至少需要保留一名管理员");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        targetUser.setUsername(buildDeletedUsername(targetUser.getId()));
+        targetUser.setGithubId(null);
+        targetUser.setGithubLogin(null);
+        targetUser.setNickname("已注销用户");
+        targetUser.setAvatar("/avatar.png");
+        targetUser.setEmail("");
+        targetUser.setPhone("");
+        targetUser.setPasswordHash(null);
+        targetUser.setBio("账号已删除");
+        targetUser.setRole("USER");
+        targetUser.setStatus(false);
+        targetUser.setLastLoginTime(null);
+        targetUser.setUpdateTime(now);
+        userAccountMapper.updateById(targetUser);
+    }
+
+    @Override
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     public void ensureAdminAccount()
     {
         UserAccount existingAdmin = userAccountMapper.selectByUsername("admin");
@@ -364,11 +459,66 @@ public class UserAccountServiceImpl implements UserAccountService
         }
         return registrationSession.getGithubLogin() + " 的 GitHub 主页";
     }
+<<<<<<< HEAD
     @Override
     public UserAccount findById(Long userId) {
         if (userId == null) {
             return null;
         }
         return userAccountMapper.selectById(userId);
+=======
+
+    private UserAccount requireActiveUser(String username)
+    {
+        UserAccount userAccount = findByUsername(username);
+        if (userAccount == null || Boolean.FALSE.equals(userAccount.getStatus())) {
+            throw new IllegalArgumentException("当前用户不存在或已失效");
+        }
+        return userAccount;
+    }
+
+    private UserAccount requireActiveUser(Long userId)
+    {
+        UserAccount userAccount = userAccountMapper.selectById(userId);
+        if (userAccount == null || Boolean.FALSE.equals(userAccount.getStatus())) {
+            throw new IllegalArgumentException("用户不存在或已删除");
+        }
+        return userAccount;
+    }
+
+    private Long safeAdminCount()
+    {
+        Long count = userAccountMapper.countActiveAdmins();
+        return count == null ? 0L : count;
+    }
+
+    private boolean isAdmin(UserAccount userAccount)
+    {
+        return userAccount != null && "ADMIN".equalsIgnoreCase(userAccount.getRole());
+    }
+
+    private String buildDeletedUsername(Long userId)
+    {
+        return "deleted_user_" + userId + "_" + System.currentTimeMillis();
+    }
+
+    private AdminUserVO toAdminUserVO(UserAccount userAccount)
+    {
+        return new AdminUserVO(
+                userAccount.getId(),
+                userAccount.getUsername(),
+                userAccount.getNickname(),
+                userAccount.getAvatar(),
+                userAccount.getEmail(),
+                userAccount.getPhone(),
+                userAccount.getBio(),
+                userAccount.getRole(),
+                userAccount.getGithubLogin(),
+                StringUtils.hasText(userAccount.getPasswordHash()),
+                userAccount.getStatus(),
+                userAccount.getCreateTime(),
+                userAccount.getLastLoginTime()
+        );
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     }
 }

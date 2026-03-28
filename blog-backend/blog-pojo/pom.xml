@@ -23,6 +23,7 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-annotation</artifactId>
         </dependency>
+<<<<<<< HEAD
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
@@ -33,6 +34,8 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+=======
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     </dependencies>
 
     <build>

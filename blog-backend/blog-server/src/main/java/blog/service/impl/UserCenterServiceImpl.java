@@ -11,6 +11,10 @@ import blog.mapper.ForumPostMapper;
 import blog.mapper.ForumReportMapper;
 import blog.mapper.UserAccountMapper;
 import blog.mapper.UserNotificationMapper;
+<<<<<<< HEAD
+=======
+import blog.service.AccessControlService;
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 import blog.service.ForumPostService;
 import blog.service.UserAccountService;
 import blog.service.UserCenterService;
@@ -54,6 +58,12 @@ public class UserCenterServiceImpl implements UserCenterService
     @Autowired
     private ForumPostService forumPostService;
 
+<<<<<<< HEAD
+=======
+    @Autowired
+    private AccessControlService accessControlService;
+
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     @Override
     public UserCenterOverviewVO getOverview(String username)
     {
@@ -68,7 +78,11 @@ public class UserCenterServiceImpl implements UserCenterService
                 : forumReportMapper.selectByReporterId(currentUser.getId(), CENTER_LIST_LIMIT);
         List<UserNotificationVO> notifications = userNotificationMapper.selectByUserId(currentUser.getId(), CENTER_LIST_LIMIT);
         List<ForumPostVO> moderationPosts = admin
+<<<<<<< HEAD
                 ? forumPostMapper.selectPage("latest", 0, CENTER_LIST_LIMIT, null, null, false)
+=======
+                ? forumPostMapper.selectPage("latest", 0, CENTER_LIST_LIMIT, null, null, null, false)
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
                 : Collections.emptyList();
 
         UserCenterOverviewVO overview = new UserCenterOverviewVO();
@@ -112,7 +126,11 @@ public class UserCenterServiceImpl implements UserCenterService
         forumReportMapper.insert(report);
 
         String reporterName = StringUtils.hasText(currentUser.getNickname()) ? currentUser.getNickname() : currentUser.getUsername();
+<<<<<<< HEAD
         List<UserAccount> admins = userAccountMapper.selectByRole("ADMIN");
+=======
+        List<UserAccount> admins = userAccountMapper.selectAdmins();
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         for (UserAccount admin : admins) {
             createNotification(
                     admin.getId(),
@@ -141,7 +159,11 @@ public class UserCenterServiceImpl implements UserCenterService
     @Override
     public ForumReportVO reviewReport(String username, Long reportId, ForumReportReviewDTO request)
     {
+<<<<<<< HEAD
         UserAccount currentUser = requireAdmin(username);
+=======
+        UserAccount currentUser = accessControlService.requireAdmin(username);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         if (request == null || !StringUtils.hasText(request.getStatus())) {
             throw new IllegalArgumentException("处理状态不能为空");
         }
@@ -180,14 +202,22 @@ public class UserCenterServiceImpl implements UserCenterService
     @Override
     public void updateAdminPostMeta(String username, Long postId, ForumPostAdminUpdateDTO request)
     {
+<<<<<<< HEAD
         requireAdmin(username);
+=======
+        accessControlService.requireAdmin(username);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         forumPostService.updateAdminPostMeta(postId, request);
     }
 
     @Override
     public void deleteAdminPost(String username, Long postId)
     {
+<<<<<<< HEAD
         requireAdmin(username);
+=======
+        accessControlService.requireAdmin(username);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         forumPostService.deletePost(postId);
     }
 
@@ -233,25 +263,37 @@ public class UserCenterServiceImpl implements UserCenterService
 
     private UserAccount requireUser(String username)
     {
+<<<<<<< HEAD
         UserAccount user = userAccountService.findByUsername(username);
         if (user == null) {
             throw new IllegalArgumentException("当前用户不存在");
         }
         return user;
+=======
+        return accessControlService.requireUser(username);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     }
 
     private UserAccount requireAdmin(String username)
     {
+<<<<<<< HEAD
         UserAccount user = requireUser(username);
         if (!isAdmin(user)) {
             throw new IllegalArgumentException("当前用户没有管理员权限");
         }
         return user;
+=======
+        return accessControlService.requireAdmin(username);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     }
 
     private boolean isAdmin(UserAccount user)
     {
+<<<<<<< HEAD
         return user != null && "ADMIN".equalsIgnoreCase(user.getRole());
+=======
+        return accessControlService.isAdmin(user);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     }
 
     private String trimToNull(String value)

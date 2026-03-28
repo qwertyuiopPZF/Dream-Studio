@@ -21,11 +21,22 @@
         </div>
       </el-col>
       <!-- Sidebar -->
+<<<<<<< HEAD
       <el-col :xs="24" :sm="24" :md="6">
         <div class="sidebar">
           <InfoCard class="sidebar-card" />
           <TagsCard class="sidebar-card" />
           <CategoryCard class="sidebar-card" />
+=======
+      <el-col :xs="24" :sm="24" :md="6" class="sidebar-column">
+        <div class="sidebar">
+          <InfoCard class="sidebar-card" />
+
+          <div class="sidebar-affix-shell">
+            <TagsCard class="sidebar-card" />
+            <CategoryCard class="sidebar-card" />
+          </div>
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         </div>
       </el-col>
     </el-row>
@@ -48,7 +59,11 @@ const articles = ref([])
 const pagination = ref({
   currentPage: 1,
   total: 0,
+<<<<<<< HEAD
   size: 4,
+=======
+  size: 10,
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 })
 
 // 加载和错误状态
@@ -136,6 +151,46 @@ watch(
   margin-bottom: 20px;
 }
 
+<<<<<<< HEAD
+=======
+.main-content {
+  align-items: stretch;
+}
+
+.sidebar-column {
+  display: flex;
+}
+
+.sidebar,
+.sidebar-affix-shell {
+  width: 100%;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.sidebar-affix-shell {
+  position: sticky;
+  top: 0px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-affix-shell .sidebar-card:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 991px) {
+  .sidebar-affix-shell {
+    position: static;
+    top: auto;
+  }
+}
+
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 .pagination-container {
   display: flex;
   justify-content: center;

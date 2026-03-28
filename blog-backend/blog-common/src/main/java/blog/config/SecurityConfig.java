@@ -4,8 +4,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+<<<<<<< HEAD
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+=======
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -33,8 +38,16 @@ public class SecurityConfig
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
+<<<<<<< HEAD
                                                    DaoAuthenticationProvider authenticationProvider) throws Exception
     {
+=======
+                                                   UserDetailsService userDetailsService,
+                                                   PasswordEncoder passwordEncoder) throws Exception
+    {
+        DaoAuthenticationProvider authenticationProvider = buildAuthenticationProvider(userDetailsService, passwordEncoder);
+
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
@@ -44,6 +57,25 @@ public class SecurityConfig
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(
+<<<<<<< HEAD
+=======
+                                HttpMethod.GET,
+                                "/admin",
+                                "/admin/articlemgmt",
+                                "/admin/commentmgmt",
+                                "/admin/momentsmgmt",
+                                "/admin/content",
+                                "/admin/writearticle",
+                                "/admin/article/edit/*",
+                                "/admin/writemoment",
+                                "/admin/categorisemgmt",
+                                "/admin/tagsmgmt",
+                                "/admin/forum-entry",
+                                "/admin/site",
+                                "/admin/usermgmt"
+                        ).permitAll()
+                        .requestMatchers(
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
                                 "/error",
                                 "/favicon.ico",
                                 "/static/**",
@@ -55,6 +87,7 @@ public class SecurityConfig
                                 "/v3/api-docs/**",
                                 "/actuator/health",
                                 "/v1/auth/**",
+<<<<<<< HEAD
                                 "/api/auth/**",
                                 "/admin/auth/**"
                         ).permitAll()
@@ -68,6 +101,13 @@ public class SecurityConfig
                         .requestMatchers(HttpMethod.PUT, "/api/forum/posts/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/forum/posts/**").authenticated()
 
+=======
+                                "/api/auth/**"
+                        ).permitAll()
+                        .requestMatchers("/api/user/**", "/api/archive/**", "/admin/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/post", "/api/comments/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/comments/**").authenticated()
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -75,9 +115,14 @@ public class SecurityConfig
         return http.build();
     }
 
+<<<<<<< HEAD
     @Bean
     public DaoAuthenticationProvider authenticationProvider(UserDetailsService userDetailsService,
                                                             PasswordEncoder passwordEncoder)
+=======
+    private DaoAuthenticationProvider buildAuthenticationProvider(UserDetailsService userDetailsService,
+                                                                  PasswordEncoder passwordEncoder)
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
@@ -86,9 +131,16 @@ public class SecurityConfig
     }
 
     @Bean
+<<<<<<< HEAD
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception
     {
         return authenticationConfiguration.getAuthenticationManager();
+=======
+    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
+                                                       PasswordEncoder passwordEncoder)
+    {
+        return new ProviderManager(buildAuthenticationProvider(userDetailsService, passwordEncoder));
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     }
 
     @Bean

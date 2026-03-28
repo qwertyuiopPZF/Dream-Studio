@@ -26,9 +26,16 @@ export function fetchArticlesByTagId(id, params) {
 
 export function getAllTags() {
   return request({
+<<<<<<< HEAD
     baseURL: '',
     url: '/admin/tags/list',
     method: 'get',
   })
 }
 
+=======
+    url: '/tags',
+    method: 'get',
+  })
+}
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8

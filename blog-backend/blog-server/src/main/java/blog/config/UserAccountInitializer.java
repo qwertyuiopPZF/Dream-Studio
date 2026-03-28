@@ -61,8 +61,11 @@ public class UserAccountInitializer implements CommandLineRunner
                       email VARCHAR(200) DEFAULT NULL COMMENT '邮箱',
                       avatar VARCHAR(500) DEFAULT NULL COMMENT '头像地址',
                       view_count INT NOT NULL DEFAULT 0 COMMENT '浏览次数',
+<<<<<<< HEAD
                       comment_count INT NOT NULL DEFAULT 0 COMMENT '评论次数',
                       like_count INT NOT NULL DEFAULT 0 COMMENT '点赞数',
+=======
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
                       is_pinned TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否置顶',
                       is_featured TINYINT(1) NOT NULL DEFAULT 0 COMMENT '是否加精',
                       create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -115,11 +118,46 @@ public class UserAccountInitializer implements CommandLineRunner
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户通知表'
                     """);
 
+<<<<<<< HEAD
             ensureColumnExists("article", "author_id", "ALTER TABLE article ADD COLUMN author_id BIGINT DEFAULT NULL COMMENT '作者用户ID' AFTER id");
             ensureColumnExists("forum_post", "author_id", "ALTER TABLE forum_post ADD COLUMN author_id BIGINT DEFAULT NULL COMMENT '作者用户ID' AFTER id");
             ensureColumnExists("forum_post", "comment_count", "ALTER TABLE forum_post ADD COLUMN comment_count INT NOT NULL DEFAULT 0 COMMENT '评论次数' AFTER view_count");
             ensureColumnExists("forum_post", "like_count", "ALTER TABLE forum_post ADD COLUMN like_count INT NOT NULL DEFAULT 0 COMMENT '点赞数' AFTER comment_count");
             ensureColumnExists("forum_post", "status", "ALTER TABLE forum_post ADD COLUMN status INT NOT NULL DEFAULT 1 COMMENT '状态' AFTER is_featured");
+=======
+            jdbcTemplate.execute("""
+                    CREATE TABLE IF NOT EXISTS announcement (
+                      id BIGINT NOT NULL AUTO_INCREMENT COMMENT '公告ID',
+                      author_id BIGINT NOT NULL COMMENT '发布人用户ID',
+                      title VARCHAR(200) NOT NULL COMMENT '公告标题',
+                      content TEXT NOT NULL COMMENT '公告内容',
+                      status TINYINT NOT NULL DEFAULT '1' COMMENT '状态：0-草稿，1-已发布',
+                      publish_time DATETIME DEFAULT NULL COMMENT '发布时间',
+                      create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                      update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                      PRIMARY KEY (id),
+                      KEY idx_announcement_status (status, publish_time)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='站点公告表'
+                    """);
+
+            jdbcTemplate.execute("""
+                    CREATE TABLE IF NOT EXISTS system_config (
+                      id BIGINT NOT NULL AUTO_INCREMENT COMMENT '配置ID',
+                      config_key VARCHAR(100) NOT NULL COMMENT '配置键',
+                      config_value TEXT COMMENT '配置值',
+                      config_type VARCHAR(20) DEFAULT 'STRING' COMMENT '配置类型',
+                      description VARCHAR(200) DEFAULT NULL COMMENT '配置描述',
+                      create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                      update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                      PRIMARY KEY (id),
+                      UNIQUE KEY uk_config_key (config_key)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统配置表'
+                    """);
+
+            ensureColumnExists("article", "author_id", "ALTER TABLE article ADD COLUMN author_id BIGINT DEFAULT NULL COMMENT '作者用户ID' AFTER id");
+            ensureColumnExists("moment", "author_id", "ALTER TABLE moment ADD COLUMN author_id BIGINT DEFAULT NULL COMMENT '作者用户ID' AFTER id");
+            ensureColumnExists("forum_post", "author_id", "ALTER TABLE forum_post ADD COLUMN author_id BIGINT DEFAULT NULL COMMENT '作者用户ID' AFTER id");
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
             ensureColumnExists("comment", "user_id", "ALTER TABLE comment ADD COLUMN user_id BIGINT DEFAULT NULL COMMENT '评论用户ID' AFTER id");
             ensureColumnExists("user_account", "phone", "ALTER TABLE user_account ADD COLUMN phone VARCHAR(30) DEFAULT NULL COMMENT '手机号' AFTER email");
 
@@ -127,8 +165,16 @@ public class UserAccountInitializer implements CommandLineRunner
             Long adminId = userAccountService.ensureDefaultAdminAndGetId();
             if (adminId != null) {
                 jdbcTemplate.update("UPDATE article SET author_id = ? WHERE author_id IS NULL", adminId);
+<<<<<<< HEAD
                 jdbcTemplate.update("UPDATE forum_post SET author_id = ? WHERE author_id IS NULL", adminId);
             }
+=======
+                jdbcTemplate.update("UPDATE moment SET author_id = ? WHERE author_id IS NULL", adminId);
+                jdbcTemplate.update("UPDATE forum_post SET author_id = ? WHERE author_id IS NULL", adminId);
+                jdbcTemplate.update("UPDATE user_account SET role = 'ADMIN' WHERE username = 'admin'");
+            }
+            ensureSystemConfigDefaults();
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
             log.info("已确保 admin 测试账号存在");
         } catch (Exception e) {
             log.warn("初始化 admin 测试账号失败：{}", e.getMessage());
@@ -148,4 +194,34 @@ public class UserAccountInitializer implements CommandLineRunner
             jdbcTemplate.execute(alterSql);
         }
     }
+<<<<<<< HEAD
+=======
+
+    private void ensureSystemConfigDefaults()
+    {
+        ensureSystemConfig("site.name", "Dream Studio", "STRING", "网站名称");
+        ensureSystemConfig("site.description", "一个支持内容创作、论坛交流与站点公告的社区", "STRING", "网站描述");
+        ensureSystemConfig("site.keywords", "Dream Studio,博客,论坛,社区", "STRING", "网站关键词");
+        ensureSystemConfig("site.author", "Dream Studio", "STRING", "网站作者");
+        ensureSystemConfig("site.icp", "", "STRING", "ICP备案号");
+    }
+
+    private void ensureSystemConfig(String configKey, String configValue, String configType, String description)
+    {
+        Integer count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM system_config WHERE config_key = ?",
+                Integer.class,
+                configKey
+        );
+        if (Objects.equals(count, 0)) {
+            jdbcTemplate.update(
+                    "INSERT INTO system_config(config_key, config_value, config_type, description) VALUES(?, ?, ?, ?)",
+                    configKey,
+                    configValue,
+                    configType,
+                    description
+            );
+        }
+    }
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 }

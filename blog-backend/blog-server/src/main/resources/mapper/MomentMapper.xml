@@ -6,6 +6,12 @@
     <update id="update">
         update moment
         <set>
+<<<<<<< HEAD
+=======
+            <if test="authorId != null">
+                author_id = #{authorId},
+            </if>
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
             <if test="content != null">
                 content = #{content},
             </if>
@@ -22,4 +28,8 @@
         </set>
         WHERE id = #{id}
     </update>
+<<<<<<< HEAD
 </mapper>
+=======
+</mapper>
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8

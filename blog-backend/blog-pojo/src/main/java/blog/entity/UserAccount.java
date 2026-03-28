@@ -31,6 +31,10 @@ public class UserAccount
 
     private String bio;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     private String role;
 
     private Boolean status;

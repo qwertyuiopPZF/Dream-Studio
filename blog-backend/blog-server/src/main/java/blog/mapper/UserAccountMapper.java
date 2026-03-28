@@ -24,8 +24,19 @@ public interface UserAccountMapper
     @Select("SELECT * FROM user_account WHERE github_login = #{githubLogin} LIMIT 1")
     UserAccount selectByGithubLogin(String githubLogin);
 
+<<<<<<< HEAD
     @Select("SELECT * FROM user_account WHERE role = #{role} AND status = TRUE")
     List<UserAccount> selectByRole(String role);
+=======
+    @Select("SELECT * FROM user_account WHERE role = 'ADMIN' AND status = TRUE")
+    List<UserAccount> selectAdmins();
+
+    @Select("SELECT * FROM user_account WHERE status = TRUE ORDER BY CASE WHEN role = 'ADMIN' THEN 0 ELSE 1 END, COALESCE(last_login_time, create_time) DESC")
+    List<UserAccount> selectActiveUsers();
+
+    @Select("SELECT COUNT(*) FROM user_account WHERE role = 'ADMIN' AND status = TRUE")
+    Long countActiveAdmins();
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 
     @Insert("INSERT INTO user_account(username, github_id, github_login, nickname, avatar, email, phone, password_hash, bio, role, status, last_login_time, create_time, update_time) " +
             "VALUES(#{username}, #{githubId}, #{githubLogin}, #{nickname}, #{avatar}, #{email}, #{phone}, #{passwordHash}, #{bio}, #{role}, #{status}, #{lastLoginTime}, #{createTime}, #{updateTime})")

@@ -32,6 +32,11 @@ public interface ArticleService {
      */
     List<ArticleVO> listArticles(ArticleQueryDTO queryDTO);
 
+<<<<<<< HEAD
+=======
+    ArticleVO findArticleById(Long id);
+
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     /**
      * 根据ID查询文章
      * @param id 文章ID

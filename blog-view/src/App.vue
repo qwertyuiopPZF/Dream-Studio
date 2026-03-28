@@ -14,19 +14,44 @@ const route = useRoute()
 const transitionName = ref('app-fade')
 
 const topLevelRouteKey = (currentRoute) => currentRoute.matched?.[0]?.path || currentRoute.path
+<<<<<<< HEAD
+=======
+const isWorkspaceRoute = (path = '') => path.startsWith('/admin') || path.startsWith('/profile')
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 
 watch(
   () => route.fullPath,
   (to, from) => {
+<<<<<<< HEAD
     const enteringAdmin = to.startsWith('/admin')
     const leavingAdmin = from?.startsWith('/admin')
 
     if (enteringAdmin && !leavingAdmin) {
+=======
+    const enteringWorkspace = isWorkspaceRoute(to)
+    const leavingWorkspace = isWorkspaceRoute(from)
+
+    if (to.startsWith('/admin') && from?.startsWith('/profile')) {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
       transitionName.value = 'app-slide-left'
       return
     }
 
+<<<<<<< HEAD
     if (!enteringAdmin && leavingAdmin) {
+=======
+    if (to.startsWith('/profile') && from?.startsWith('/admin')) {
+      transitionName.value = 'app-slide-right'
+      return
+    }
+
+    if (enteringWorkspace && !leavingWorkspace) {
+      transitionName.value = 'app-slide-left'
+      return
+    }
+
+    if (!enteringWorkspace && leavingWorkspace) {
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
       transitionName.value = 'app-slide-right'
       return
     }

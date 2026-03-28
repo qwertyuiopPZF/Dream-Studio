@@ -153,3 +153,99 @@ export function deleteAdminMoment(id) {
     method: 'delete',
   })
 }
+<<<<<<< HEAD
+=======
+
+export function fetchAdminForumPosts(params) {
+  return request({
+    baseURL: '',
+    url: '/admin/forum/posts',
+    method: 'get',
+    params,
+  })
+}
+
+export function updateAdminForumPostMeta(id, data) {
+  return request({
+    baseURL: '',
+    url: `/admin/forum/posts/${id}`,
+    method: 'put',
+    data,
+  })
+}
+
+export function deleteManagedForumPost(id) {
+  return request({
+    baseURL: '',
+    url: `/admin/forum/posts/${id}`,
+    method: 'delete',
+  })
+}
+
+export function fetchAdminSiteInfo() {
+  return request({
+    baseURL: '',
+    url: '/admin/site/info',
+    method: 'get',
+  })
+}
+
+export function updateAdminSiteInfo(data) {
+  return request({
+    baseURL: '',
+    url: '/admin/site/info',
+    method: 'put',
+    data,
+  })
+}
+
+export function fetchAdminAnnouncements() {
+  return request({
+    baseURL: '',
+    url: '/admin/site/announcements',
+    method: 'get',
+  })
+}
+
+export function fetchAdminUsers() {
+  return request({
+    baseURL: '',
+    url: '/admin/users',
+    method: 'get',
+  })
+}
+
+export function updateAdminUserAdminStatus(id, admin) {
+  return request({
+    baseURL: '',
+    url: `/admin/users/${id}/admin-status`,
+    method: 'put',
+    params: { admin },
+  })
+}
+
+export function deleteAdminUser(id) {
+  return request({
+    baseURL: '',
+    url: `/admin/users/${id}`,
+    method: 'delete',
+  })
+}
+
+export function createAdminAnnouncement(data) {
+  return request({
+    baseURL: '',
+    url: '/admin/site/announcements',
+    method: 'post',
+    data,
+  })
+}
+
+export function deleteAdminAnnouncement(id) {
+  return request({
+    baseURL: '',
+    url: `/admin/site/announcements/${id}`,
+    method: 'delete',
+  })
+}
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8

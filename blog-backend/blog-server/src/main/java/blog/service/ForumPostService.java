@@ -2,29 +2,47 @@ package blog.service;
 
 import blog.dto.ForumPostAdminUpdateDTO;
 import blog.dto.ForumPostDTO;
+<<<<<<< HEAD
 import blog.dto.PostCreateDTO;
 import blog.dto.PostQueryDTO;
 import blog.result.PageResult;
 import blog.vo.ForumPostVO;
 import blog.vo.PostDetailVO;
 import blog.vo.PostVO;
+=======
+import blog.vo.ForumPostVO;
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 
 import java.util.List;
 import java.util.Map;
 
+<<<<<<< HEAD
 public interface ForumPostService {
 
 
 
+=======
+public interface ForumPostService
+{
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     Map<String, Object> listPosts(String sort, int page, int size);
 
     ForumPostVO getPostById(Long id);
 
+<<<<<<< HEAD
+=======
+    ForumPostVO findPostById(Long id);
+
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     ForumPostVO createPost(ForumPostDTO forumPostDTO);
 
     Map<String, List<ForumPostVO>> getSidebarData(Long currentPostId, int limit);
 
+<<<<<<< HEAD
     Map<String, Object> listAdminPosts(int page, int size, String keyword);
+=======
+    Map<String, Object> listAdminPosts(int page, int size, String keyword, Long authorId);
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 
     void updateAdminPostMeta(Long id, ForumPostAdminUpdateDTO updateDTO);
 
@@ -33,6 +51,7 @@ public interface ForumPostService {
     void touchLastActivityByPage(String page);
 
     Long countTotal();
+<<<<<<< HEAD
 
 
 
@@ -85,4 +104,6 @@ public interface ForumPostService {
      * 取消点赞（如需）
      */
     void unlikePost(Long postId, Long userId);
+=======
+>>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 }
