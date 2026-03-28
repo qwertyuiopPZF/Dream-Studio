@@ -2,7 +2,7 @@ spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/eleven_blog?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
     username: ${SPRING_DATASOURCE_USERNAME:root}
-    password: ${SPRING_DATASOURCE_PASSWORD:123456}
+    password: ${SPRING_DATASOURCE_PASSWORD:1234}
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
@@ -47,6 +47,16 @@ logging:
 
 file:
   upload-dir: ${FILE_UPLOAD_DIR:upload}
+
+object-storage:
+  endpoint: ${OBJECT_STORAGE_ENDPOINT:http://127.0.0.1:9000}
+  region: ${OBJECT_STORAGE_REGION:us-east-1}
+  access-key: ${OBJECT_STORAGE_ACCESS_KEY:minioadmin}
+  secret-key: ${OBJECT_STORAGE_SECRET_KEY:minioadmin}
+  bucket: ${OBJECT_STORAGE_BUCKET:dream-studio}
+  public-url: ${OBJECT_STORAGE_PUBLIC_URL:http://127.0.0.1:9000/dream-studio}
+  key-prefix: ${OBJECT_STORAGE_KEY_PREFIX:blog}
+  path-style-access: ${OBJECT_STORAGE_PATH_STYLE_ACCESS:true}
 
 blog:
   owner:
