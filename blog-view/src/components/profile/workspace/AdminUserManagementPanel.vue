@@ -1,6 +1,6 @@
 <template>
   <workspace-page-shell title="用户管理" description="管理员可以查看当前账号，并执行删号和管理员权限调整。" :loading="loading" @refresh="loadUsers">
-    <template v-if="!isAdmin">
+    <template v-if="!canManageUsers">
       <workspace-permission-notice message="当前账号没有用户管理权限。" />
     </template>
     <template v-else>
@@ -107,14 +107,15 @@ import {
   deleteAdminUser,
   fetchAdminUsers,
   updateAdminUserAdminStatus,
-} from '@/api/admin'
+} from '@/api/admin/users'
 import { useUserStore } from '@/store/user'
 import { formatManagementTime } from '@/utils/profileManagement'
+import { WORKSPACE_CAPABILITIES } from '@/utils/workspaceCapabilities'
 import WorkspacePageShell from '@/components/profile/workspace/WorkspacePageShell.vue'
 import WorkspacePermissionNotice from '@/components/profile/workspace/WorkspacePermissionNotice.vue'
 
 const userStore = useUserStore()
-const isAdmin = computed(() => userStore.isAdmin)
+const canManageUsers = computed(() => userStore.hasCapability(WORKSPACE_CAPABILITIES.USER_MANAGE))
 const currentProfile = computed(() => userStore.profile || {})
 const loading = ref(false)
 const actionLoadingId = ref(null)
@@ -132,7 +133,7 @@ const isCurrentUser = (row) => {
 }
 
 const loadUsers = async () => {
-  if (!isAdmin.value) return
+  if (!canManageUsers.value) return
 
   loading.value = true
 

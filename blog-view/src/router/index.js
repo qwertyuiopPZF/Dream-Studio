@@ -1,133 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 import { useUserStore } from '@/store/user'
+import { WORKSPACE_CAPABILITIES } from '@/utils/workspaceCapabilities'
 
-<<<<<<< HEAD
-=======
-const workspaceViewLoaders = {
-  user: {
-    layout: () => import('@/views/user/Layout.vue'),
-    articleManagement: () => import('@/views/user/ArticleManagement.vue'),
-    momentManagement: () => import('@/views/user/MomentManagement.vue'),
-    articleEditor: () => import('@/views/user/PostArticle.vue'),
-    momentEditor: () => import('@/views/user/PostMoment.vue'),
-    forumPublish: () => import('@/views/user/PostForumThread.vue'),
-    forumManagement: () => import('@/views/user/ForumThreadManagement.vue'),
-  },
-  admin: {
-    layout: () => import('@/views/admin/Layout.vue'),
-    articleManagement: () => import('@/views/admin/ArticleManagement.vue'),
-    commentManagement: () => import('@/views/admin/AdminCommentManagement.vue'),
-    momentManagement: () => import('@/views/admin/MomentManagement.vue'),
-    articleEditor: () => import('@/views/admin/PostArticle.vue'),
-    momentEditor: () => import('@/views/admin/PostMoment.vue'),
-    categoryManagement: () => import('@/views/admin/AdminCategoryManagement.vue'),
-    tagManagement: () => import('@/views/admin/AdminTagManagement.vue'),
-    forumPublish: () => import('@/views/admin/PostForumThread.vue'),
-    forumManagement: () => import('@/views/admin/ForumThreadManagement.vue'),
-    siteOverview: () => import('@/views/admin/AdminSiteOverview.vue'),
-    userManagement: () => import('@/views/admin/AdminUserManagement.vue'),
-  },
-}
-
-const createWorkspaceChildren = (workspaceMode) => {
-  const isAdminWorkspace = workspaceMode === 'admin'
-  const routeBase = isAdminWorkspace ? '/admin' : '/profile'
-  const routeNamePrefix = isAdminWorkspace ? 'admin' : 'profile'
-  const views = workspaceViewLoaders[workspaceMode]
-
-  const routes = [
-    {
-      path: 'articlemgmt',
-      name: `${routeNamePrefix}ArticleMgmt`,
-      component: views.articleManagement,
-    },
-  ]
-
-  if (isAdminWorkspace) {
-    routes.push({
-      path: 'commentmgmt',
-      name: 'adminCommentMgmt',
-      component: views.commentManagement,
-    })
-  }
-
-  routes.push(
-    {
-      path: 'momentsmgmt',
-      name: `${routeNamePrefix}MomentsMgmt`,
-      component: views.momentManagement,
-    },
-    {
-      path: 'content',
-      redirect: `${routeBase}/articlemgmt`,
-    },
-    {
-      path: 'writearticle',
-      name: `${routeNamePrefix}WriteArticle`,
-      component: views.articleEditor,
-    },
-    {
-      path: 'article/edit/:id',
-      name: `${routeNamePrefix}EditArticle`,
-      component: views.articleEditor,
-    },
-    {
-      path: 'writemoment',
-      name: `${routeNamePrefix}WriteMoment`,
-      component: views.momentEditor,
-    },
-  )
-
-  if (isAdminWorkspace) {
-    routes.push(
-      {
-        path: 'categorisemgmt',
-        name: 'adminCategoriseMgmt',
-        component: views.categoryManagement,
-      },
-      {
-        path: 'tagsmgmt',
-        name: 'adminTagsMgmt',
-        component: views.tagManagement,
-      },
-      {
-        path: 'usermgmt',
-        name: 'adminUserMgmt',
-        component: views.userManagement,
-      },
-    )
-  }
-
-  routes.push(
-    {
-      path: 'forum-publish',
-      name: `${routeNamePrefix}ForumPublish`,
-      component: views.forumPublish,
-    },
-    {
-      path: 'forum-manage',
-      name: `${routeNamePrefix}ForumManage`,
-      component: views.forumManagement,
-    },
-    {
-      path: 'forum-entry',
-      redirect: `${routeBase}/forum-publish`,
-    },
-  )
-
-  if (isAdminWorkspace) {
-    routes.push({
-      path: 'site',
-      name: 'adminSite',
-      component: views.siteOverview,
-    })
-  }
-
-  return routes
-}
-
->>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -183,15 +58,11 @@ const router = createRouter({
           name: 'forumPostDetail',
           component: () => import('@/views/ForumPostDetail.vue'),
         },
-<<<<<<< HEAD
         {
           path: 'profile',
           name: 'profileCenter',
           component: () => import('@/views/ProfileCenter.vue'),
         },
-=======
-
->>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
         {
           path: 'article/:id',
           name: 'articleDetail',
@@ -205,7 +76,6 @@ const router = createRouter({
       ],
     },
     {
-<<<<<<< HEAD
       path: '/admin',
       component: () => import('@/views/admin/AdminLayout.vue'),
       redirect: '/admin/home',
@@ -272,20 +142,6 @@ const router = createRouter({
           component: () => import('@/views/admin/AdminSite.vue'),
         },
       ],
-=======
-      path: '/profile',
-      component: workspaceViewLoaders.user.layout,
-      redirect: '/profile/articlemgmt',
-      meta: { requiresAuth: true },
-      children: createWorkspaceChildren('user'),
-    },
-    {
-      path: '/admin',
-      component: workspaceViewLoaders.admin.layout,
-      redirect: '/admin/articlemgmt',
-      meta: { requiresAuth: true, requiresAdmin: true },
-      children: createWorkspaceChildren('admin'),
->>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
     },
   ],
   // 路由切换时自动滚动到页面顶部
@@ -324,11 +180,7 @@ router.beforeEach((to) => {
   }
 
   if (requiresAdmin && !userStore.isAdmin) {
-<<<<<<< HEAD
     return '/profile'
-=======
-    return '/profile/articlemgmt'
->>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8
   }
 
   return true

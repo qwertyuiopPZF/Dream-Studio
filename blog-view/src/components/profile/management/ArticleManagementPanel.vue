@@ -108,10 +108,10 @@ import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import defaultAvatar from '@/assets/(5).png'
 import {
-  deleteAdminArticle,
-  fetchAdminArticles,
-  updateAdminArticle,
-} from '@/api/admin'
+  deleteManagedArticle,
+  fetchManagedArticles,
+  updateManagedArticle,
+} from '@/api/article'
 import { fetchCategories } from '@/api/categories'
 import ManagementSectionShell from '@/components/profile/management/ManagementSectionShell.vue'
 import { useWorkspaceRouteBase } from '@/composables/useWorkspaceRouteBase'
@@ -163,10 +163,10 @@ const loadArticles = async () => {
 
   try {
     await ensureCategories()
-    const data = await fetchAdminArticles({
-      page: state.pagination.page,
-      size: state.pagination.size,
-      categoryId: state.categoryId || undefined,
+      const data = await fetchManagedArticles({
+        page: state.pagination.page,
+        size: state.pagination.size,
+        categoryId: state.categoryId || undefined,
     })
 
     state.items = (data?.data || []).map((item) => ({
@@ -212,7 +212,7 @@ const handleStatusChange = async (row) => {
   row.statusLoading = true
 
   try {
-    await updateAdminArticle(row.id, { status: row.status })
+      await updateManagedArticle(row.id, { status: row.status })
     ElMessage.success('文章状态已更新')
   } catch (error) {
     row.status = previousStatus
@@ -230,7 +230,7 @@ const handleDelete = async (row) => {
       cancelButtonText: '取消',
     })
 
-    await deleteAdminArticle(row.id)
+    await deleteManagedArticle(row.id)
 
     if (state.items.length === 1 && state.pagination.page > 1) {
       state.pagination.page -= 1

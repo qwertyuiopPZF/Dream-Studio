@@ -13,12 +13,12 @@
         </el-table-column>
         <el-table-column prop="commentCount" label="评论" width="76" />
         <el-table-column prop="viewCount" label="浏览" width="76" />
-        <el-table-column v-if="isAdmin" label="置顶" width="82">
+        <el-table-column v-if="canModerateForumPosts" label="置顶" width="82">
           <template #default="{ row }">
             <el-switch v-model="row.isPinned" :loading="Boolean(row.metaLoading)" @change="updateForumMeta(row)" />
           </template>
         </el-table-column>
-        <el-table-column v-if="isAdmin" label="加精" width="82">
+        <el-table-column v-if="canModerateForumPosts" label="加精" width="82">
           <template #default="{ row }">
             <el-switch v-model="row.isFeatured" :loading="Boolean(row.metaLoading)" @change="updateForumMeta(row)" />
           </template>
@@ -55,19 +55,20 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import defaultAvatar from '@/assets/(5).png'
 import {
   deleteManagedForumPost,
-  fetchAdminForumPosts,
-  updateAdminForumPostMeta,
-} from '@/api/admin'
-import { useWorkspaceRouteBase } from '@/composables/useWorkspaceRouteBase'
+  fetchManagedForumPosts,
+  updateManagedForumPostMeta,
+} from '@/api/forum'
 import { useUserStore } from '@/store/user'
 import { formatManagementTime } from '@/utils/profileManagement'
+import { WORKSPACE_CAPABILITIES } from '@/utils/workspaceCapabilities'
 import WorkspacePageShell from '@/components/profile/workspace/WorkspacePageShell.vue'
 
 const router = useRouter()
 const userStore = useUserStore()
-const { routeBase } = useWorkspaceRouteBase()
 
-const isAdmin = computed(() => userStore.isAdmin)
+const canModerateForumPosts = computed(() =>
+  userStore.hasCapability(WORKSPACE_CAPABILITIES.FORUM_POST_MODERATE),
+)
 const loading = ref(false)
 const forumPosts = ref([])
 const pagination = reactive({
@@ -77,9 +78,8 @@ const pagination = reactive({
 })
 
 const title = '帖子管理'
-const heading = computed(() => (isAdmin.value ? '论坛帖子管理' : '我的帖子'))
 const description = computed(() => {
-  return isAdmin.value
+  return canModerateForumPosts.value
     ? '管理员可以管理全部帖子，普通用户只管理自己的帖子。'
     : '这里集中展示你发布过的帖子，方便查看与删除。'
 })
@@ -94,7 +94,7 @@ const loadForumPosts = async () => {
   loading.value = true
 
   try {
-    const response = await fetchAdminForumPosts({
+    const response = await fetchManagedForumPosts({
       page: pagination.page,
       size: pagination.size,
     })
@@ -107,12 +107,12 @@ const loadForumPosts = async () => {
 }
 
 const updateForumMeta = async (row) => {
-  if (!isAdmin.value) return
+  if (!canModerateForumPosts.value) return
 
   row.metaLoading = true
 
   try {
-    await updateAdminForumPostMeta(row.id, {
+    await updateManagedForumPostMeta(row.id, {
       isPinned: row.isPinned,
       isFeatured: row.isFeatured,
     })
@@ -136,8 +136,6 @@ const removeForumPost = async (row) => {
   }
 }
 
-const goToForum = () => router.push('/forum')
-const goToForumPublish = () => router.push(`${routeBase.value}/forum-publish`)
 const goToForumPost = (id) => router.push(`/forum/${id}`)
 
 onMounted(() => {

@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import request from '@/utils/request'
 
 /**
  * 获取标签列表
@@ -7,7 +7,7 @@ export function fetchTags() {
   return request({
     url: '/tags',
     method: 'get',
-  });
+  })
 }
 
 
@@ -21,21 +21,13 @@ export function fetchArticlesByTagId(id, params) {
     url: `/tags/${id}/articles`,
     method: 'get',
     params,
-  });
+  })
 }
 
 export function getAllTags() {
   return request({
-<<<<<<< HEAD
     baseURL: '',
     url: '/admin/tags/list',
     method: 'get',
   })
 }
-
-=======
-    url: '/tags',
-    method: 'get',
-  })
-}
->>>>>>> df87942a53c2717282b884e9e8b7a7f8444e1cc8

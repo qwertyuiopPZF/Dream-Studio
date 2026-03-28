@@ -22,3 +22,29 @@ export function createForumPost(data) {
     data,
   })
 }
+
+export function fetchManagedForumPosts(params) {
+  return request({
+    baseURL: '',
+    url: '/admin/forum/posts',
+    method: 'get',
+    params,
+  })
+}
+
+export function updateManagedForumPostMeta(id, data) {
+  return request({
+    baseURL: '',
+    url: `/admin/forum/posts/${id}`,
+    method: 'put',
+    data,
+  })
+}
+
+export function deleteManagedForumPost(id) {
+  return request({
+    baseURL: '',
+    url: `/admin/forum/posts/${id}`,
+    method: 'delete',
+  })
+}

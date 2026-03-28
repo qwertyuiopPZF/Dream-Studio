@@ -75,7 +75,7 @@ import { onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import defaultAvatar from '@/assets/(5).png'
-import { deleteAdminMoment, fetchAdminMoments } from '@/api/admin'
+import { deleteManagedMoment, fetchManagedMoments } from '@/api/moment'
 import ManagementSectionShell from '@/components/profile/management/ManagementSectionShell.vue'
 import {
   formatManagementTime,
@@ -116,10 +116,10 @@ const loadMoments = async () => {
   state.error = ''
 
   try {
-    const data = await fetchAdminMoments({
-      page: state.pagination.page,
-      size: state.pagination.size,
-    })
+      const data = await fetchManagedMoments({
+        page: state.pagination.page,
+        size: state.pagination.size,
+      })
 
     state.items = data?.list || []
     state.pagination.total = Number(data?.total || 0)
@@ -143,7 +143,7 @@ const handleDelete = async (row) => {
       cancelButtonText: '取消',
     })
 
-    await deleteAdminMoment(row.id)
+    await deleteManagedMoment(row.id)
 
     if (state.items.length === 1 && state.pagination.page > 1) {
       state.pagination.page -= 1
