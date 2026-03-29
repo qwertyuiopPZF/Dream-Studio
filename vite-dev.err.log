@@ -1,0 +1,44 @@
+[1m[33m[@vue/compiler-sfc][0m[33m `defineProps` is a compiler macro and no longer needs to be imported.[0m
+
+[1m[33m[@vue/compiler-sfc][0m[33m `defineEmits` is a compiler macro and no longer needs to be imported.[0m
+
+[2m11:56:25[22m [31m[1m[vite][22m[39m [31mInternal server error: Element is missing end tag.[39m
+  Plugin: [35mvite-plugin-vue-inspector[39m
+  File: [36mC:/Users/33313/Desktop/Dream-Studio/blog-view/src/views/admin/AdminContent.vue[39m
+      at createCompilerError (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1378:17)
+      at emitError (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3014:5)
+      at Object.onclosetag (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:2381:13)
+      at Tokenizer.stateInClosingTagName (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:799:16)
+      at Tokenizer.parse (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1157:16)
+      at Object.baseParse (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3053:13)
+      at parse (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-dom\dist\compiler-dom.cjs.js:910:23)
+      at result (file:///C:/Users/33313/Desktop/Dream-Studio/blog-view/node_modules/vite-plugin-vue-inspector/dist/index.mjs:29:21)
+      at new Promise (<anonymous>)
+      at compileSFCTemplate (file:///C:/Users/33313/Desktop/Dream-Studio/blog-view/node_modules/vite-plugin-vue-inspector/dist/index.mjs:26:24)
+[2m11:58:06[22m [31m[1m[vite][22m[39m [31mInternal server error: Invalid end tag.[39m
+  Plugin: [35mvite-plugin-vue-inspector[39m
+  File: [36mC:/Users/33313/Desktop/Dream-Studio/blog-view/src/components/profile/AdminContentTabs.vue[39m
+      at createCompilerError (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1378:17)
+      at emitError (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3014:5)
+      at Object.onclosetag (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:2391:9)
+      at Tokenizer.stateInClosingTagName (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:799:16)
+      at Tokenizer.parse (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1157:16)
+      at Object.baseParse (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3053:13)
+      at parse (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-dom\dist\compiler-dom.cjs.js:910:23)
+      at result (file:///C:/Users/33313/Desktop/Dream-Studio/blog-view/node_modules/vite-plugin-vue-inspector/dist/index.mjs:29:21)
+      at new Promise (<anonymous>)
+      at compileSFCTemplate (file:///C:/Users/33313/Desktop/Dream-Studio/blog-view/node_modules/vite-plugin-vue-inspector/dist/index.mjs:26:24)
+[2m11:58:28[22m [31m[1m[vite][22m[39m [31mInternal server error: Invalid end tag.[39m
+  Plugin: [35mvite-plugin-vue-inspector[39m
+  File: [36mC:/Users/33313/Desktop/Dream-Studio/blog-view/src/components/profile/AdminContentTabs.vue[39m
+      at createCompilerError (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1378:17)
+      at emitError (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3014:5)
+      at Object.onclosetag (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:2391:9)
+      at Tokenizer.stateInClosingTagName (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:799:16)
+      at Tokenizer.parse (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:1157:16)
+      at Object.baseParse (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-core\dist\compiler-core.cjs.js:3053:13)
+      at parse (C:\Users\33313\Desktop\Dream-Studio\blog-view\node_modules\@vue\compiler-dom\dist\compiler-dom.cjs.js:910:23)
+      at result (file:///C:/Users/33313/Desktop/Dream-Studio/blog-view/node_modules/vite-plugin-vue-inspector/dist/index.mjs:29:21)
+      at new Promise (<anonymous>)
+      at compileSFCTemplate (file:///C:/Users/33313/Desktop/Dream-Studio/blog-view/node_modules/vite-plugin-vue-inspector/dist/index.mjs:26:24)
+^C
