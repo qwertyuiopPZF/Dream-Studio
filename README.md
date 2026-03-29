@@ -1,52 +1,65 @@
-# Dream Studio
+<h1 align="center">𝒟𝓇𝑒𝒶𝓂 𝒮𝓉𝓊𝒹𝒾𝑜</h1>
 
-Dream Studio 是一个面向个人内容创作与轻社区运营的全栈博客系统，集成了博客发布、动态分享、论坛交流、资源展示、通知中心与后台管理等能力，适合作为个人站点、作品展示站或小型内容社区的基础项目。
+<p align="center"><strong>Dream Studio</strong></p>
+
+![Vue 3](https://img.shields.io/badge/Vue-3-42b883?logo=vue.js&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3-6db33f?logo=springboot&logoColor=white)
+![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ed?logo=docker&logoColor=white)
+
+Dream Studio 是一个面向个人内容创作与轻社区运营的全栈博客系统，围绕「内容发布 + 用户互动 + 后台治理」三条主线构建，适合作为个人博客、作品展示站、创作者主页，或小型社区项目的基础模板。
+
+它提供博客、动态、论坛、资源展示、通知中心、个人工作台与管理后台等完整能力，同时保留了前后端分离、权限控制和容器化部署的工程化基础，方便二次开发和落地部署。
+
+## 导航
+
+- [项目亮点](#项目亮点)
+- [界面预览](#界面预览)
+- [功能矩阵](#功能矩阵)
+- [技术栈](#技术栈)
+- [仓库结构](#仓库结构)
+- [快速开始](#快速开始)
+- [本地开发](#本地开发)
+- [关键配置](#关键配置)
+- [默认账号与安全提示](#默认账号与安全提示)
+- [数据说明](#数据说明)
+- [部署建议](#部署建议)
 
 ## 项目亮点
 
-- 博客前台：支持首页文章流、精华文章轮播、文章详情、分类筛选、标签页、归档页和关于页。
-- 轻社区能力：提供动态（Moment）、论坛帖子、评论互动、热门侧栏与举报处理机制。
-- 创作者工作台：普通用户登录后可进入个人中心，管理自己的文章、动态、论坛帖子、通知与账号资料。
-- 管理后台：管理员可查看统计面板，管理文章、评论、标签、分类、用户、公告、站点信息和论坛举报。
-- 统一权限模型：前端按 capability 控制工作台页面，后端按角色与接口职责划分普通用户端和管理端。
-- 支持容器化部署：仓库内已提供前端、后端、MySQL、Redis 的 `docker-compose.yml` 和 Dockerfile。
+- 一套系统覆盖博客发布、动态分享、论坛交流、资源展示与通知触达，适合个人创作者或小型内容社区快速起步。
+- 提供前台站点、用户工作台与管理后台三类使用视角，既能支撑内容消费，也能支持内容生产和运营治理。
+- 前端基于 Vue 3 + Vite，后端基于 Spring Boot 3 + Spring Security，兼顾开发效率与后续扩展性。
+- 内置角色与 capability 权限模型，前端按能力展示页面，后端按职责划分普通用户端与管理端接口。
+- 支持 Docker Compose 一键启动，同时兼容本地开发、传统部署与 S3 兼容对象存储方案。
+
+## 界面预览
+
+> 当前仓库内已包含登录页示例截图，适合在 GitHub 首页快速展示项目风格。
+
+![Dream Studio Login Preview](blog-view/login-page.png)
+
+## 功能矩阵
+
+| 模块 | 主要能力 |
+| --- | --- |
+| 博客前台 | 首页文章流、精华文章轮播、文章详情、分类筛选、标签页、归档页、关于页 |
+| 轻社区互动 | 动态（Moment）、论坛帖子、评论互动、热门侧栏、举报处理 |
+| 创作者工作台 | 文章管理、动态管理、论坛帖子管理、通知中心、账号资料维护 |
+| 管理后台 | 统计面板、文章管理、评论管理、标签管理、分类管理、用户管理、公告管理、站点信息管理、论坛举报处理 |
+| 权限控制 | 基于角色与 capability 的页面/接口权限控制 |
+| 文件与资源 | 本地上传目录、资源中心、S3 兼容对象存储接口 |
 
 ## 技术栈
 
-### 前端
-
-- Vue 3
-- Vite
-- Vue Router
-- Pinia
-- Element Plus
-- Axios
-- `md-editor-v3` / `highlight.js` / `prismjs`
-
-### 后端
-
-- Java 21
-- Spring Boot 3
-- Spring Security
-- MyBatis-Plus
-- PageHelper
-- Redis
-- JWT
-- Spring Boot Actuator
-- SpringDoc OpenAPI
-
-### 数据与存储
-
-- MySQL 8
-- Redis
-- 本地上传目录
-- S3 兼容对象存储接口（可对接 MinIO / AWS S3）
-
-### 部署
-
-- Docker
-- Docker Compose
-- Nginx
+| 分层 | 技术选型 |
+| --- | --- |
+| 前端 | Vue 3、Vite、Vue Router、Pinia、Element Plus、Axios |
+| 编辑与展示 | `md-editor-v3`、`highlight.js`、`prismjs` |
+| 后端 | Java 21、Spring Boot 3、Spring Security、MyBatis-Plus、PageHelper、JWT |
+| 服务能力 | Redis、Spring Boot Actuator、SpringDoc OpenAPI |
+| 数据与存储 | MySQL 8、Redis、本地上传目录、S3 兼容对象存储 |
+| 部署 | Docker、Docker Compose、Nginx |
 
 ## 仓库结构
 
@@ -57,27 +70,29 @@ Dream-Studio/
 |  |- blog-common/
 |  |- blog-pojo/
 |  `- blog-server/ # 主服务模块
-|- sql/            # 数据库初始化脚本
+|- sql/            # 数据库初始化与补充脚本
 |- upload_data/    # 本地上传文件目录
 `- docker-compose.yml
 ```
 
 ## 快速开始
 
-### 方式一：使用 Docker Compose
+### 方式一：Docker Compose
 
-这是最快的启动方式，适合本地联调与体验。
+这是最快的体验方式，适合本地联调、演示和快速预览项目。
 
 ```bash
 docker compose up --build -d
 ```
 
-默认会启动以下服务：
+启动后默认服务如下：
 
-- 前端：`http://localhost:3000`
-- 后端：`http://localhost:8080`
-- MySQL：`localhost:3306`
-- Redis：`localhost:6379`
+| 服务 | 地址 |
+| --- | --- |
+| 前端 | `http://localhost:3000` |
+| 后端 | `http://localhost:8080` |
+| MySQL | `localhost:3306` |
+| Redis | `localhost:6379` |
 
 停止服务：
 
@@ -85,7 +100,7 @@ docker compose up --build -d
 docker compose down
 ```
 
-如果希望连同数据卷一起清理：
+同时清理数据卷：
 
 ```bash
 docker compose down -v
@@ -122,7 +137,7 @@ mvn -f blog-backend/pom.xml -pl blog-server -am spring-boot:run
 
 默认后端地址：`http://localhost:8080`
 
-可选接口文档地址：
+接口文档地址：
 
 ```text
 http://localhost:8080/swagger-ui/index.html
@@ -130,7 +145,7 @@ http://localhost:8080/swagger-ui/index.html
 
 ### 3. 启动前端
 
-进入前端目录：
+进入前端目录并启动开发服务：
 
 ```bash
 cd blog-view
@@ -149,7 +164,7 @@ VITE_APP_UPLOAD_URL=http://localhost:8080
 
 ## 关键配置
 
-后端配置文件位于 `blog-backend/blog-server/src/main/resources/application.yml`，支持通过环境变量覆盖。
+后端主配置文件位于 `blog-backend/blog-server/src/main/resources/application.yml`，支持通过环境变量覆盖。
 
 ### 数据库与 Redis
 
@@ -190,10 +205,13 @@ VITE_APP_UPLOAD_URL=http://localhost:8080
 
 ## 默认账号与安全提示
 
-- 后端启动时会自动确保默认管理员账号存在：`admin / 123456`。
-- 首次启动后请立即修改默认管理员密码，避免在公开环境中直接使用默认凭据。
-- 当前仓库中的 `docker-compose.yml` 与 `application.yml` 含有本地开发用途的默认密码、示例 OAuth 配置和对象存储配置，请在部署前全部替换。
-- 建议将敏感信息迁移到环境变量或外部密钥管理系统，不要把生产密钥直接提交到仓库。
+> 后端启动时会自动确保默认管理员账号存在：`admin / 123456`。
+>
+> 首次启动后请立即修改默认管理员密码，不要在公开环境直接使用默认凭据。
+>
+> 当前仓库中的 `docker-compose.yml` 与 `application.yml` 含有本地开发用途的默认密码、示例 OAuth 配置和对象存储配置，部署前请全部替换。
+>
+> 建议将敏感信息迁移到环境变量或外部密钥管理系统，不要把生产密钥直接提交到仓库。
 
 ## 数据说明
 
@@ -206,7 +224,7 @@ VITE_APP_UPLOAD_URL=http://localhost:8080
 - 动态 `moment`
 - 系统配置 `system_config`
 
-另外，应用启动时还会自动确保以下业务表存在：
+应用启动时还会自动确保以下业务表存在：
 
 - 用户账号 `user_account`
 - 论坛帖子 `forum_post`
@@ -215,8 +233,13 @@ VITE_APP_UPLOAD_URL=http://localhost:8080
 - 站点公告 `announcement`
 - 资源中心 `site_resource`
 
+`sql/` 目录中还提供了一些补充脚本，便于按需初始化或扩展相关业务能力。
+
 ## 部署建议
 
-- 开发环境可以直接使用仓库内的 Docker 配置快速启动。
-- 生产环境建议将 MySQL、Redis、对象存储改为独立服务，并更换全部默认账号、密码和端口暴露策略。
+- 开发环境可直接使用仓库内的 Docker 配置快速启动。
+- 生产环境建议将 MySQL、Redis、对象存储拆分为独立服务，并调整默认端口暴露策略。
+- 部署前请统一替换默认账号、密码、示例 OAuth 配置与对象存储配置。
 - 若启用 GitHub OAuth，请确保 `GITHUB_OAUTH_REDIRECT_URI` 与前端登录页地址保持一致。
+
+如果你准备基于该项目继续扩展，可以优先从主题定制、权限细化、审核流、消息体系或对象存储接入这几个方向继续演进。

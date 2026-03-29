@@ -33,6 +33,14 @@ export default defineConfig({
         target: devProxyTarget,
         changeOrigin: true,
       },
+      '/upload': {
+        target: devProxyTarget,
+        changeOrigin: true,
+      },
+      '/images': {
+        target: devProxyTarget,
+        changeOrigin: true,
+      },
     },
   },
 

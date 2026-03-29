@@ -4,6 +4,7 @@ import blog.config.ObjectStorageProperties;
 import blog.service.ResourceStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,9 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -36,15 +40,23 @@ import java.util.UUID;
 public class S3ResourceStorageService implements ResourceStorageService
 {
     private static final DateTimeFormatter DATE_PATH = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+    private static final String LOCAL_UPLOAD_PREFIX = "/upload/";
 
     private final ObjectStorageProperties properties;
+
+    @Value("${file.upload-dir:upload}")
+    private String uploadDir;
 
     @Override
     public String uploadResource(MultipartFile file, String folder)
     {
-        validateConfiguration();
-
         String key = buildObjectKey(StringUtils.hasText(folder) ? folder.trim() : "resources", file.getOriginalFilename());
+
+        if (!properties.isConfigured()) {
+            log.warn("Object storage is not configured, storing resource locally. key={}", key);
+            return storeLocally(file, key);
+        }
+
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(properties.getBucket())
                 .key(key)
@@ -59,15 +71,23 @@ public class S3ResourceStorageService implements ResourceStorageService
             return accessibleUrl;
         } catch (IOException e) {
             throw new IllegalStateException("Failed to read upload stream", e);
-        } catch (SdkException e) {
-            throw new IllegalStateException("Failed to upload object to storage", e);
+        } catch (IllegalStateException | SdkException e) {
+            log.warn("Object storage upload failed, falling back to local storage. bucket={}, key={}", properties.getBucket(), key, e);
+            return storeLocally(file, key);
         }
     }
 
     @Override
     public void deleteByReference(String reference)
     {
-        validateConfiguration();
+        if (isLocalReference(reference)) {
+            deleteLocal(reference);
+            return;
+        }
+
+        if (!properties.isConfigured()) {
+            throw new IllegalStateException("Object storage is not fully configured");
+        }
 
         String key = extractObjectKey(reference);
         if (!StringUtils.hasText(key)) {
@@ -116,6 +136,99 @@ public class S3ResourceStorageService implements ResourceStorageService
         if (!properties.isConfigured()) {
             throw new IllegalStateException("Object storage is not fully configured");
         }
+    }
+
+    private String storeLocally(MultipartFile file, String key)
+    {
+        Path root = resolveLocalStorageRoot();
+        Path target = root.resolve(key.replace("/", java.io.File.separator)).normalize();
+        ensureWithinRoot(root, target);
+
+        try {
+            Path parent = target.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
+
+            try (InputStream inputStream = file.getInputStream()) {
+                Files.copy(inputStream, target, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            log.info("Stored resource locally at path={}", target);
+            return LOCAL_UPLOAD_PREFIX + key;
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to store file locally", e);
+        }
+    }
+
+    private void deleteLocal(String reference)
+    {
+        String key = extractLocalObjectKey(reference);
+        if (!StringUtils.hasText(key)) {
+            throw new IllegalArgumentException("Missing object reference");
+        }
+
+        Path root = resolveLocalStorageRoot();
+        Path target = root.resolve(key.replace("/", java.io.File.separator)).normalize();
+        ensureWithinRoot(root, target);
+
+        try {
+            Files.deleteIfExists(target);
+            log.info("Deleted local resource at path={}", target);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to delete local object", e);
+        }
+    }
+
+    private Path resolveLocalStorageRoot()
+    {
+        String normalizedUploadDir = StringUtils.hasText(uploadDir) ? uploadDir.trim() : "upload";
+        Path root = Path.of(normalizedUploadDir).toAbsolutePath().normalize();
+
+        try {
+            Files.createDirectories(root);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to initialize local upload directory", e);
+        }
+
+        return root;
+    }
+
+    private void ensureWithinRoot(Path root, Path target)
+    {
+        if (!target.startsWith(root)) {
+            throw new IllegalStateException("Resolved local storage path is outside upload directory");
+        }
+    }
+
+    private boolean isLocalReference(String reference)
+    {
+        if (!StringUtils.hasText(reference)) {
+            return false;
+        }
+
+        String normalizedReference = reference.trim();
+        return normalizedReference.startsWith(LOCAL_UPLOAD_PREFIX)
+                || normalizedReference.contains(LOCAL_UPLOAD_PREFIX);
+    }
+
+    private String extractLocalObjectKey(String reference)
+    {
+        if (!StringUtils.hasText(reference)) {
+            return "";
+        }
+
+        String normalizedReference = reference.trim();
+        int prefixIndex = normalizedReference.indexOf(LOCAL_UPLOAD_PREFIX);
+        if (prefixIndex >= 0) {
+            return normalizedReference.substring(prefixIndex + LOCAL_UPLOAD_PREFIX.length());
+        }
+
+        if (normalizedReference.startsWith("/")) {
+            return normalizedReference.substring(1);
+        }
+
+        return normalizedReference;
     }
 
     private void ensureBucketExists(S3Client client)
